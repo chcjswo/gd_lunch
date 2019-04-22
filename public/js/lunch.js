@@ -11,7 +11,6 @@ const getCurrentDate = () => {
  * @param {data} 식당 리스트 Array
  */
 const makeRestaurantItem = (data) => {
-	console.log(data);
 	return data.reduce((html, item) => {
 		html += `<div class="media text-muted pt-3" id="r-${item.no}">
 			<svg 
@@ -52,11 +51,11 @@ function showRestaurantList() {
 		type: 'get',
 		contentType: 'application/json',
 		url: '/api/v1/lunch/'
-	}).done(function (data) {
+	}).done(function(data) {
 		$('.restaurantList').append(makeRestaurantItem(data));
-	}).fail(function (data) {
+	}).fail(function(data) {
 		alert(data.responseJSON.message);
-	}).always(function () {
+	}).always(function() {
 		$('.loading').hide();
 	});
 }
@@ -79,12 +78,12 @@ const onClickAddRestaurant = () => {
 		contentType: 'application/json',
 		url: '/api/v1/lunch',
 		data: JSON.stringify({ name })
-	}).done(function (data) {
+	}).done(function(data) {
 		$('#restaurantName').val('');
 		$('.restaurantList').append(makeRestaurantItem(data));
-	}).fail(function (data) {
+	}).fail(function(data) {
 		alert(data.responseJSON.message);
-	}).always(function () {
+	}).always(function() {
 		$('.loading').hide();
 	});
 };
@@ -99,17 +98,18 @@ const onClickChoiceRestaurant = () => {
 		type: 'post',
 		contentType: 'application/json',
 		url: '/api/v1/lunch/choice'
-	}).done(function (data) {
+	}).done(function(data) {
+		$('#todayLunch').hide();
 		$('#myModal').modal();
 	
-		$('.modal-title').html(`${getCurrentDate()} 오늘의 점심 식당은??`);
+		$('.modal-title').html(`${getCurrentDate()} 점심 식당은??`);
 		$('.modal-body').html(`오늘은 <b>${data.name}</b> 어떤가요???`);		
 		$('#c-' + data.no).html(data.choiceCount);
 		$('#choiceRestaurantNo').val(data.no);
 		$('#choiceRestaurantName').val(data.name);
-	}).fail(function (data) {
+	}).fail(function(data) {
 		alert(data.responseJSON.message);
-	}).always(function () {
+	}).always(function() {
 		$('.loading').hide();
 	});
 };
@@ -132,10 +132,15 @@ const onClickDecisionRestaurant = () => {
 		let visitCount = parseInt($('#v-' + restaurantNo).html());
 		visitCount++;
 		$('#v-' + restaurantNo).html(visitCount);
-		alert(`오늘의 점심 식당은 ${restaurantName}(으)로 선택 하셨습니다.`);
-	}).fail(function (data) {
+		
+		$('#today').html(`${getCurrentDate()} 선택된 식당`);
+		$('#todayRestaurant').html(`오늘은 <b>${restaurantName}</b> 입니다.`);
+		$('#todayLunch').show();
+
+		// alert(`오늘의 점심 식당은 ${restaurantName}(으)로 선택 하셨습니다.`);
+	}).fail(function(data) {
 		alert(data.responseJSON.message);
-	}).always(function () {
+	}).always(function() {
 		$('.loading').hide();
 	});
 };
@@ -176,14 +181,14 @@ function onClickRemove(no) {
 	}).done(function () {
 		$('#r-' + no).remove();
 		alert('삭제 했습니다.');
-	}).fail(function (data) {
+	}).fail(function(data) {
 		alert(data.responseJSON.message);
-	}).always(function () {
+	}).always(function() {
 		$('.loading').hide();
 	});
 }
 
-$(function () {
+$(function() {
 	showRestaurantList();
 	$('.addRestaurant').click(function () {
 		onClickAddRestaurant();
