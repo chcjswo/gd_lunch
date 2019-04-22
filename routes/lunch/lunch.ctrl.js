@@ -2,7 +2,7 @@ const models = require('../../models');
 
 const list = async (req, res) => {
     try {
-        const data = await models.lunch.findAll();
+        const data = await models.restaurant.findAll();
 
         return res.json(data);
     } catch(err) {
@@ -25,7 +25,7 @@ const create = async (req, res) => {
             name: req.body.name,
             visitCount: 0
         };
-        const data = await models.lunch.create(restaurantData);
+        const data = await models.restaurant.create(restaurantData);
 
         return res.status(201).json([data]);
     } catch(err) {
@@ -45,7 +45,7 @@ const remove = async (req, res) => {
     }
 
     try {
-        const result = await models.lunch.destroy({
+        const result = await models.restaurant.destroy({
             where: {
                 no 
             }
@@ -67,13 +67,13 @@ const remove = async (req, res) => {
 };
 
 const choice = async (req, res) => {    
-    const restaurantList = await models.lunch.findAll();
+    const restaurantList = await models.restaurant.findAll();
     const index = Math.floor(Math.random() * restaurantList.length);
     const no = restaurantList[index].no;
 
     try {
 
-        await models.lunch.update({
+        await models.restaurant.update({
             choiceCount: models.sequelize.literal('choiceCount + 1')
         }, {
             where: {
@@ -81,7 +81,7 @@ const choice = async (req, res) => {
             }
         });
 
-        const result = await models.lunch.findOne({
+        const result = await models.restaurant.findOne({
             where: {
                 no
             }
@@ -112,7 +112,7 @@ const decision = async (req, res) => {
     }
 
     try {
-        const result = await models.lunch.update({
+        const result = await models.restaurant.update({
             visitCount: models.sequelize.literal('visitCount + 1')
         }, {
             where: {
