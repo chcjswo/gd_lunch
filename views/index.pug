@@ -1,0 +1,49 @@
+extends ./layout/layout
+
+block content
+    main(role="main" class="container main")
+        .col-md-6.order-md-1
+            .d-flex.align-items-center.p-3.my-3.text-white-50.bg-purple.rounded.shadow-sm
+                img.mr-3(src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-outline.svg" alt="" width="48" height="48")
+                .lh-100
+                    h6.mb-0.text-white.lh-100 개발 2팀 점심 뭐 먹지??
+                    small Since 2019-04-20
+            .my-3.p-3.bg-white.rounded.shadow-sm.restaurantList
+                h6.border-bottom.border-gray.pb-2.mb-0 등록된 식당 목록
+        .col-md-6.order-md-2
+            h4.mb-3 식당 선택
+            .mb-3
+            button.btn.btn-info.btn-lg.btn-block.choiceRestaurant 랜덤 식당 선택
+        .col-md-6(style="height: 10px")
+        .col-md-6.order-md-3
+            h4.mb-3 식당 등록
+            .mb-3
+                .input-group
+                    .input-group-prepend
+                    span.input-group-text @
+                    input.form-control#restaurantName(type="text" placeholder="식당 이름")
+            button.btn.btn-primary.btn-lg.btn-block.addRestaurant 등록
+        .col-md-6(style="height: 100px")
+        input#choiceRestaurantNo(type="hidden")
+        input#choiceRestaurantName(type="hidden")
+        <!-- The Modal -->
+        .modal#myModal
+            .modal-dialog
+                .modal-content                
+                    <!-- Modal Header -->
+                    .modal-header
+                        h4.modal-title
+                        button.close(type="button" data-dismiss="modal") &times;                    
+                    <!-- Modal body -->
+                    .modal-body                    
+                    <!-- Modal footer -->
+                    .modal-footer
+                        button.btn.btn-primary.decisionRestaurant(type="button" data-dismiss="modal") 선택
+                        button.btn.btn-danger(type="button" data-dismiss="modal") 닫기
+
+    script(type='text/javascript', src='https://code.jquery.com/jquery-3.4.0.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
+    script(type='text/javascript', src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+
+block javascript
+    script(type='text/javascript', src='/js/lunch.js')
