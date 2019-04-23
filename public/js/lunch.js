@@ -60,14 +60,34 @@ function showRestaurantList() {
 	});
 }
 
+$(".alert button.close").click(function (e) {
+    $(this).parent().fadeOut(300);
+});
+
+const notify = (text, type) => {
+	$.notify(text, {
+		width: 100,
+		offset: {
+			x: 0,
+			y: 400
+		},
+		spacing: 20,
+		z_index: 1031,
+		type,
+		allow_dismiss: true,
+		delay: 100,
+		timer: 500
+	});
+};
+
 /**
  * 식당 추가
  */
 const onClickAddRestaurant = () => {
 	const name = $('#restaurantName').val();
 
-	if (restaurantName === '') {
-		alert('식당 이름을 입력해주세요.');
+	if (name === '') {
+		notify('식당 이름을 입력해주세요.', 'danger');
 		return;
 	}
 
@@ -205,4 +225,3 @@ $(function() {
 		}
 	});
 });
-
