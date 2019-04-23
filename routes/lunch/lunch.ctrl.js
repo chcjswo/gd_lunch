@@ -27,7 +27,7 @@ const list = async (req, res) => {
 
         return res.json({ 
             restaurantList,
-            restaurantName: lunchRestaurant.restaurant_name
+            restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : ''
         });
     } catch(err) {
         console.error('error ===> ', err);
