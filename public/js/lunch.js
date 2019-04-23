@@ -135,6 +135,7 @@ const onClickChoiceRestaurant = () => {
 		$('#c-' + data.no).html(data.choiceCount);
 		$('#choiceRestaurantNo').val(data.no);
 		$('#choiceRestaurantName').val(data.name);
+		$('#isDecistion').val('Y');
 	}).fail(function(data) {
 		alert(data.responseJSON.message);
 	}).always(function() {
