@@ -42,7 +42,7 @@ const makeRestaurantItem = (data) => {
 };
 
 /**
- * 유저 리스트 보여 주기
+ * 식당 리스트 보여 주기
  */
 function showRestaurantList() {
 	$('.loading').show();
@@ -52,7 +52,13 @@ function showRestaurantList() {
 		contentType: 'application/json',
 		url: '/api/v1/lunch/'
 	}).done(function(data) {
-		$('.restaurantList').append(makeRestaurantItem(data));
+		$('.restaurantList').append(makeRestaurantItem(data.restaurantList));
+		if (data.restaurantName) {
+			$('#today').html(`${getCurrentDate()} 선택된 식당`);
+			$('#todayRestaurant').html(`오늘은 <b>${data.restaurantName}</b> 입니다.`);
+			$('#todayLunch').show();
+			$('#isDecistion').val('Y');
+		}
 	}).fail(function(data) {
 		alert(data.responseJSON.message);
 	}).always(function() {
@@ -60,16 +66,12 @@ function showRestaurantList() {
 	});
 }
 
-$(".alert button.close").click(function (e) {
-    $(this).parent().fadeOut(300);
-});
-
-const notify = (text, type) => {
+const notify = (text, type, offsetY = 400) => {
 	$.notify(text, {
 		width: 100,
 		offset: {
 			x: 0,
-			y: 400
+			y: offsetY
 		},
 		spacing: 20,
 		z_index: 1031,
@@ -87,7 +89,7 @@ const onClickAddRestaurant = () => {
 	const name = $('#restaurantName').val();
 
 	if (name === '') {
-		notify('식당 이름을 입력해주세요.', 'danger');
+		notify('식당 이름을 입력해주세요.', 'danger', 10);
 		return;
 	}
 
@@ -99,6 +101,7 @@ const onClickAddRestaurant = () => {
 		url: '/api/v1/lunch',
 		data: JSON.stringify({ name })
 	}).done(function(data) {
+		notify('식당을 추가 했습니다.', 'success', 10);
 		$('#restaurantName').val('');
 		$('.restaurantList').append(makeRestaurantItem(data));
 	}).fail(function(data) {
@@ -112,6 +115,11 @@ const onClickAddRestaurant = () => {
  * 식당 선택
  */
 const onClickChoiceRestaurant = () => {
+	if ($('#isDecistion').val() === 'Y') {
+		notify('오늘은 이미 식당이 결정 됐습니다.', 'info', 10);
+		return;
+	}
+
 	$('.loading').show();
 
 	$.ajax({
@@ -156,31 +164,12 @@ const onClickDecisionRestaurant = () => {
 		$('#today').html(`${getCurrentDate()} 선택된 식당`);
 		$('#todayRestaurant').html(`오늘은 <b>${restaurantName}</b> 입니다.`);
 		$('#todayLunch').show();
-
-		// alert(`오늘의 점심 식당은 ${restaurantName}(으)로 선택 하셨습니다.`);
 	}).fail(function(data) {
 		alert(data.responseJSON.message);
 	}).always(function() {
 		$('.loading').hide();
 	});
 };
-
-/**
- * 유저 리스트 tr 만들기
- * @param {data} 유저 리스트 Array
- */
-function makeUsersList(data) {
-	return data.reduce((html, item) => {
-		html += `<tr class="show-detail" style="cursor: pointer"
-		data-user-id="${item.id}">
-        <td class="v-align-middle">${item.id}</td>
-        <td class="v-align-middle">${item.email}</td>
-        <td class="v-align-middle">${item.displayName}</td>
-        <td class="v-align-middle">${item.provider}</td>
-        <td class="v-align-middle">${item.hp}</td></tr>`;
-		return html
-	}, '');
-}
 
 /**
  * 식당 삭제 클릭 이벤트
@@ -200,7 +189,7 @@ function onClickRemove(no) {
 		data: JSON.stringify(data)
 	}).done(function () {
 		$('#r-' + no).remove();
-		alert('삭제 했습니다.');
+		notify('삭제 했습니다.', 'success', 10);
 	}).fail(function(data) {
 		alert(data.responseJSON.message);
 	}).always(function() {

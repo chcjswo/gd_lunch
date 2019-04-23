@@ -1,10 +1,34 @@
 const models = require('../../models');
 
+const getCurrentDate = () => {
+    const d = new Date();
+
+    return `${d.getFullYear()}${(d.getMonth() + 1)
+            .toString().padStart(2, '0')}${d.getDate()
+            .toString().padStart(2, '0')}`;
+};
+
+/**
+ * 식당 리스트
+ */
 const list = async (req, res) => {
     try {
-        const data = await models.restaurant.findAll();
+        const d = new Date();
+	    const date = `${d.getFullYear()}${(d.getMonth() + 1)
+		                .toString().padStart(2, '0')}${d.getDate()
+                        .toString().padStart(2, '0')}`;
+            
+        const restaurantList = await models.restaurant.findAll();
+        const lunchRestaurant = await models.lunch.findOne({
+            where: {
+                lunch_date: date
+            }
+        });
 
-        return res.json(data);
+        return res.json({ 
+            restaurantList,
+            restaurantName: lunchRestaurant.restaurant_name
+        });
     } catch(err) {
         console.error('error ===> ', err);
         return res.status(500).json({
@@ -13,6 +37,9 @@ const list = async (req, res) => {
     }
 };
 
+/**
+ * 새로운 식당 추가
+ */
 const create = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({
@@ -29,12 +56,16 @@ const create = async (req, res) => {
 
         return res.status(201).json([data]);
     } catch(err) {
+        console.error('error ===> ', err);
         return res.status(500).json({
             message: '식당 등록중 에러가 발생했습니다.'
         });
     }
 };
 
+/**
+ * 식당 삭제
+ */
 const remove = async (req, res) => {
     const no = req.body.no;
 
@@ -66,6 +97,9 @@ const remove = async (req, res) => {
     }
 };
 
+/**
+ * 랜덤 식당 선택
+ */
 const choice = async (req, res) => {    
     const restaurantList = await models.restaurant.findAll();
     const index = Math.floor(Math.random() * restaurantList.length);
@@ -102,6 +136,9 @@ const choice = async (req, res) => {
     }
 };
 
+/**
+ * 식당 결정
+ */
 const decision = async (req, res) => {
     const no = req.body.no;
 
@@ -125,6 +162,18 @@ const decision = async (req, res) => {
                 message: '선택할 식당이 없습니다.'
             });
         }
+
+        const restaurant = await models.restaurant.findOne({
+            where: {
+                no
+            }
+        });
+
+        const restaurantData = {
+            lunch_date: getCurrentDate(),
+            restaurant_name: restaurant.name
+        };
+        await models.lunch.create(restaurantData);
 
         return res.status(201).end();
     } catch(err) {        
