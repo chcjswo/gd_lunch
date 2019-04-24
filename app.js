@@ -19,6 +19,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(router);
 // //////////////////////////////////////////////
 
-app.listen(3000,  () => {
+// heroku port 설정
+const port = process.env.PORT || 3000;
+
+app.listen(port,  () => {
     console.log('GD Lunch app listening on port 3000!');
 });
