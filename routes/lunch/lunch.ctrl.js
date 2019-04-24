@@ -12,22 +12,18 @@ const getCurrentDate = () => {
  * 식당 리스트
  */
 const list = async (req, res) => {
-    try {
-        const d = new Date();
-	    const date = `${d.getFullYear()}${(d.getMonth() + 1)
-		                .toString().padStart(2, '0')}${d.getDate()
-                        .toString().padStart(2, '0')}`;
-            
+    try {            
         const restaurantList = await models.restaurant.findAll();
         const lunchRestaurant = await models.lunch.findOne({
             where: {
-                lunch_date: date
+                lunch_date: getCurrentDate()
             }
         });
 
         return res.json({ 
             restaurantList,
-            restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : ''
+            restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : '',
+            lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ''
         });
     } catch(err) {
         console.error('error ===> ', err);
