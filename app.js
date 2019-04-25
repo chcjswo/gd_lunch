@@ -1,7 +1,21 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const router = require('./routes');
+const mongoose = require('mongoose');
+
+// Node.js의 native Promise 사용
+mongoose.Promise = global.Promise;
+
+// MongoDB 데이터베이스 접속하기
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true })
+    .then(() => {
+        console.log('Successfully connected to MongoDB');
+    }).catch(e => {
+        console.error('Connection error: ', e);
+    });
 
 const app = express();
 
@@ -22,6 +36,6 @@ app.use(router);
 // heroku port 설정
 const port = process.env.PORT || 3000;
 
-app.listen(port,  () => {
+app.listen(port, () => {
     console.log('GD Lunch app listening on port 3000!');
 });

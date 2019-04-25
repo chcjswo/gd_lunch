@@ -46,3 +46,5 @@ config/dbSync.sh
 package-lock.json
 
 .vscode
+
+.env
