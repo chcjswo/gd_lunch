@@ -1,5 +1,8 @@
 const models = require('../../../models/mysql');
 
+const Restaurant = require('../../../models/mongo/Restaurant');
+const Lunch = require('../../../models/mongo/Lunch');
+
 const getCurrentDate = () => {
     const d = new Date();
 
@@ -10,25 +13,40 @@ const getCurrentDate = () => {
  * 식당 리스트
  */
 const list = async (req, res) => {
-    try {            
-        const restaurantList = await models.restaurant.findAll();
-        const lunchRestaurant = await models.lunch.findOne({
-            where: {
-                lunch_date: getCurrentDate()
-            }
+    Restaurant.find()
+        .then((result) => {
+            return res.json({ 
+                restaurantList: result,
+                restaurantName: '',
+                lunchDate: ''
+            });
+        })
+        .catch((err) => {
+            console.error('error ===> ', err);
+            return res.status(500).json({
+                message: '식당 조회중 에러가 발생했습니다.'
+            });
         });
 
-        return res.json({ 
-            restaurantList,
-            restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : '',
-            lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ''
-        });
-    } catch(err) {
-        console.error('error ===> ', err);
-        return res.status(500).json({
-            message: '식당 조회중 에러가 발생했습니다.'
-        });
-    }
+    // try {
+    //     const restaurantList = await Restaurant.getRestaurnatList();
+    //     const lunchRestaurant = await models.lunch.findOne({
+    //         where: {
+    //             lunch_date: getCurrentDate()
+    //         }
+    //     });
+
+    //     return res.json({ 
+    //         restaurantList,
+    //         restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : '',
+    //         lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ''
+    //     });
+    // } catch(err) {
+    //     console.error('error ===> ', err);
+    //     return res.status(500).json({
+    //         message: '식당 조회중 에러가 발생했습니다.'
+    //     });
+    // }
 };
 
 /**

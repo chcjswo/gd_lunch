@@ -2,20 +2,31 @@ var mongoose = require('mongoose');
 var schema = mongoose.Schema;
 
 var restaurantSchema = schema({
-    lunch_date:{
-        type: String,
-        unique: true
+    name:{
+        type: String
     },
-    restaurant_name:{
-        type: String,
-        unique: true
+    visitCount:{
+        type: Number,
+        default: 0
+    },
+    choiceCount:{
+        type: Number,
+        default: 0
+    },
+    createdAt:{
+        type: Date,
+        default: Date.now
     }
 });
 
 const Restaurant = module.exports = mongoose.model("Restaurant", restaurantSchema);
 
-const getUsers = (query, page, limit, callBack) => {
-    Restaurant.paginate(query, { page: page, limit: limit, sort: 'username'}, callBack);
+const getRestaurnatList = (callBack) => {
+    Restaurant
+        .find()
+        .skip(random)
+        .select('name visitCount choiceCount cratedAt')
+        .exec(callBack);
 };
 
 const getFavoriteHashTag = (username, callBack) => {
@@ -31,7 +42,7 @@ const getUserByQuery = (query, callBack) => {
 }
 
 module.exports = {
-    getUsers,
+    getRestaurnatList,
     getFavoriteHashTag,
     getUserById,
     getUserByQuery
