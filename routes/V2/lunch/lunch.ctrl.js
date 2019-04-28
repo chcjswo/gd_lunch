@@ -12,7 +12,7 @@ const getCurrentDate = () => {
  */
 const list = async (req, res) => {
     try {
-        const restaurantList =  await Restaurant.find();
+        const restaurantList =  await Restaurant.find().sort({ visitCount: -1, choiceCount: -1 });
         const lunchRestaurant = await Lunch.findOne({
             lunch_date: getCurrentDate()
         });
