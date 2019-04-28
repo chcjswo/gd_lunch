@@ -177,6 +177,10 @@ const onClickDecisionRestaurant = () => {
  * @param {no} 식당 아이디
  */
 function onClickRemove(no) {
+	if (!confirm('식당을 삭제 하시겠습니까??')) {
+		return;
+	}
+	
 	$('.loading').show();
 
 	$.ajax({
