@@ -12,7 +12,7 @@ const getCurrentDate = () => {
  */
 const makeRestaurantItem = (data) => {
 	return data.reduce((html, item) => {
-		html += `<div class="media text-muted pt-3" id="r-${item.no}">
+		html += `<div class="media text-muted pt-3" id="r-${item._id}">
 			<svg 
 				class="bd-placeholder-img mr-2 rounded" 
 				width="32" 
@@ -29,11 +29,11 @@ const makeRestaurantItem = (data) => {
 			<div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
 				<div class="d-flex justify-content-between align-items-center w-100">
 					<strong class="text-gray-dark">${item.name}</strong>
-					<a href="#" onClick="onClickRemove('${item.no}')">삭제</a>
+					<a href="#" onClick="onClickRemove('${item._id}')">삭제</a>
 				</div>
 				<span class="d-block">
-					<span id="v-${item.no}">${item.visitCount}</span>번 방문 / 
-					<span id="c-${item.no}">${item.choiceCount}</span>번 선택
+					<span id="v-${item._id}">${item.visitCount}</span>번 방문 / 
+					<span id="c-${item._id}">${item.choiceCount}</span>번 선택
 				</span>
 			</div>
 		</div>`;
@@ -54,7 +54,7 @@ function showRestaurantList() {
 	}).done(function(data) {
 		$('.restaurantList').append(makeRestaurantItem(data.restaurantList));
 		if (data.restaurantName) {
-			$('#today').html(`${getCurrentDate()} 선택된 식당`);
+			$('#today').html(`${data.lunchDate} 선택된 식당`);
 			$('#todayRestaurant').html(`오늘은 <b>${data.restaurantName}</b> 입니다.`);
 			$('#todayLunch').show();
 			$('#isDecistion').val('Y');
@@ -98,7 +98,7 @@ const onClickAddRestaurant = () => {
 	$.ajax({
 		type: 'post',
 		contentType: 'application/json',
-		url: '/api/v1/lunch',
+		url: '/api/v2/lunch',
 		data: JSON.stringify({ name })
 	}).done(function(data) {
 		notify('식당을 추가 했습니다.', 'success', 10);
@@ -125,15 +125,15 @@ const onClickChoiceRestaurant = () => {
 	$.ajax({
 		type: 'post',
 		contentType: 'application/json',
-		url: '/api/v1/lunch/choice'
+		url: '/api/v2/lunch/choice'
 	}).done(function(data) {
 		$('#todayLunch').hide();
 		$('#myModal').modal();
 	
 		$('.modal-title').html(`${getCurrentDate()} 점심 식당은??`);
 		$('.modal-body').html(`오늘은 <b>${data.name}</b> 어떤가요???`);		
-		$('#c-' + data.no).html(data.choiceCount);
-		$('#choiceRestaurantNo').val(data.no);
+		$('#c-' + data._id).html(data.choiceCount);
+		$('#choiceRestaurantNo').val(data._id);
 		$('#choiceRestaurantName').val(data.name);
 	}).fail(function(data) {
 		alert(data.responseJSON.message);
@@ -154,7 +154,7 @@ const onClickDecisionRestaurant = () => {
 	$.ajax({
 		type: 'post',
 		contentType: 'application/json',
-		url: '/api/v1/lunch/decision',
+		url: '/api/v2/lunch/decision',
 		data: JSON.stringify({ no: restaurantNo })
 	}).done(function () {
 		let visitCount = parseInt($('#v-' + restaurantNo).html());
@@ -177,17 +177,13 @@ const onClickDecisionRestaurant = () => {
  * @param {no} 식당 아이디
  */
 function onClickRemove(no) {
-	const data = {
-		no
-	};
-
 	$('.loading').show();
 
 	$.ajax({
 		type: 'delete',
 		contentType: 'application/json',
-		url: '/api/v1/lunch',
-		data: JSON.stringify(data)
+		url: '/api/v2/lunch',
+		data: JSON.stringify({ no })
 	}).done(function () {
 		$('#r-' + no).remove();
 		notify('삭제 했습니다.', 'success', 10);

@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const schema = mongoose.Schema;
 
-var restaurantSchema = schema({
+const restaurantSchema = schema({
     name:{
         type: String
     },
@@ -19,31 +19,32 @@ var restaurantSchema = schema({
     }
 });
 
-const Restaurant = module.exports = mongoose.model("Restaurant", restaurantSchema);
+// const Restaurant = module.exports = mongoose.model("Restaurant", restaurantSchema);
+module.exports = mongoose.model("Restaurant", restaurantSchema);
 
-const getRestaurnatList = (callBack) => {
-    Restaurant
-        .find()
-        .skip(random)
-        .select('name visitCount choiceCount cratedAt')
-        .exec(callBack);
-};
+// const getRestaurnatList = (callBack) => {
+//     Restaurant
+//         .find()
+//         .skip(random)
+//         .select('name visitCount choiceCount cratedAt')
+//         .exec(callBack);
+// };
 
-const getFavoriteHashTag = (username, callBack) => {
-    Restaurant.findOne({username: username}, callBack);
-}
+// const getFavoriteHashTag = (username, callBack) => {
+//     Restaurant.findOne({username: username}, callBack);
+// }
 
-const getUserById = (userId, callBack) => {
-    Restaurant.findOne({_id: userId }, callBack);
-}
+// const getUserById = (userId, callBack) => {
+//     Restaurant.findOne({_id: userId }, callBack);
+// }
 
-const getUserByQuery = (query, callBack) => {
-    Restaurant.findOne(query, callBack);
-}
+// const getUserByQuery = (query, callBack) => {
+//     Restaurant.findOne(query, callBack);
+// }
 
-module.exports = {
-    getRestaurnatList,
-    getFavoriteHashTag,
-    getUserById,
-    getUserByQuery
-};
+// module.exports = {
+//     getRestaurnatList,
+//     getFavoriteHashTag,
+//     getUserById,
+//     getUserByQuery
+// };

@@ -177,17 +177,13 @@ const onClickDecisionRestaurant = () => {
  * @param {no} 식당 아이디
  */
 function onClickRemove(no) {
-	const data = {
-		no
-	};
-
 	$('.loading').show();
 
 	$.ajax({
 		type: 'delete',
 		contentType: 'application/json',
 		url: '/api/v1/lunch',
-		data: JSON.stringify(data)
+		data: JSON.stringify({ no })
 	}).done(function () {
 		$('#r-' + no).remove();
 		notify('삭제 했습니다.', 'success', 10);

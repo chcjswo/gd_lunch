@@ -1,5 +1,3 @@
-const models = require('../../../models/mysql');
-
 const Restaurant = require('../../../models/mongo/Restaurant');
 const Lunch = require('../../../models/mongo/Lunch');
 
@@ -13,40 +11,23 @@ const getCurrentDate = () => {
  * 식당 리스트
  */
 const list = async (req, res) => {
-    Restaurant.find()
-        .then((result) => {
-            return res.json({ 
-                restaurantList: result,
-                restaurantName: '',
-                lunchDate: ''
-            });
-        })
-        .catch((err) => {
-            console.error('error ===> ', err);
-            return res.status(500).json({
-                message: '식당 조회중 에러가 발생했습니다.'
-            });
+    try {
+        const restaurantList =  await Restaurant.find();
+        const lunchRestaurant = await Lunch.findOne({
+            lunch_date: getCurrentDate()
         });
-
-    // try {
-    //     const restaurantList = await Restaurant.getRestaurnatList();
-    //     const lunchRestaurant = await models.lunch.findOne({
-    //         where: {
-    //             lunch_date: getCurrentDate()
-    //         }
-    //     });
-
-    //     return res.json({ 
-    //         restaurantList,
-    //         restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : '',
-    //         lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ''
-    //     });
-    // } catch(err) {
-    //     console.error('error ===> ', err);
-    //     return res.status(500).json({
-    //         message: '식당 조회중 에러가 발생했습니다.'
-    //     });
-    // }
+        
+        return res.json({ 
+            restaurantList,
+            restaurantName: lunchRestaurant ? lunchRestaurant.restaurant_name : '',
+            lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ''
+        });
+    } catch (err) {
+        console.error('error ===> ', err);
+        return res.status(500).json({
+            message: '식당 조회중 에러가 발생했습니다.'
+        });
+    }
 };
 
 /**
@@ -60,11 +41,10 @@ const create = async (req, res) => {
     }
 
     try {
-        const restaurantData = {
-            name: req.body.name,
-            visitCount: 0
-        };
-        const data = await models.restaurant.create(restaurantData);
+        const newRestaurant = new Restaurant({
+            name: req.body.name
+        });
+        const data = await newRestaurant.save();
 
         return res.status(201).json([data]);
     } catch(err) {
@@ -81,17 +61,15 @@ const create = async (req, res) => {
 const remove = async (req, res) => {
     const no = req.body.no;
 
-    if (!req.body) {
+    if (!no) {
         return res.status(400).json({
             message: '데이터가 없습니다.'
         });
     }
 
     try {
-        const result = await models.restaurant.destroy({
-            where: {
-                no 
-            }
+        const result = await Restaurant.remove({
+            _id: no
         });
 
         if (!result) {
@@ -113,33 +91,29 @@ const remove = async (req, res) => {
  * 랜덤 식당 선택
  */
 const choice = async (req, res) => {    
-    const restaurantList = await models.restaurant.findAll();
+    const restaurantList = await Restaurant.find();
     const index = Math.floor(Math.random() * restaurantList.length);
-    const no = restaurantList[index].no;
+    const restaurantData = restaurantList[index];
+
+    // 선택 카운트 업데이트
+    restaurantData.choiceCount++;
 
     try {
-
-        await models.restaurant.update({
-            choiceCount: models.sequelize.literal('choiceCount + 1')
-        }, {
-            where: {
-                no
+        await Restaurant.updateOne({ 
+            _id: restaurantData._id 
+        }, { 
+            $set:  {
+                choiceCount: restaurantData.choiceCount
             }
         });
 
-        const result = await models.restaurant.findOne({
-            where: {
-                no
-            }
-        });
-
-        if (!result) {
+        if (!restaurantData) {
             return res.status(404).json({
                 message: '선택할 식당이 없습니다.'
             });
         }
 
-        return res.status(201).json(result);
+        return res.status(201).json(restaurantData);
     } catch(err) {        
         console.error('error ==> ', err);
         return res.status(500).json({
@@ -154,18 +128,19 @@ const choice = async (req, res) => {
 const decision = async (req, res) => {
     const no = req.body.no;
 
-    if (!req.body) {
+    if (!no) {
         return res.status(400).json({
             message: '데이터가 없습니다.'
         });
     }
 
     try {
-        const result = await models.restaurant.update({
-            visitCount: models.sequelize.literal('visitCount + 1')
-        }, {
-            where: {
-                no
+        // 방문수 업데이트
+        const result = await Restaurant.updateOne({ 
+            _id: no 
+        }, { 
+            $inc:  {
+                visitCount: 1
             }
         });
 
@@ -175,17 +150,18 @@ const decision = async (req, res) => {
             });
         }
 
-        const restaurant = await models.restaurant.findOne({
-            where: {
-                no
-            }
+        // 결정된 식당 조회
+        const restaurant = await Restaurant.findOne({
+            _id: no
+        });
+        
+        const newLunch = new Lunch({
+            lunch_date: getCurrentDate(),
+            restaurant_name: restaurant.name          
         });
 
-        const restaurantData = {
-            lunch_date: getCurrentDate(),
-            restaurant_name: restaurant.name
-        };
-        await models.lunch.create(restaurantData);
+        // 오늘의 식당 입력
+        await newLunch.save();
 
         return res.status(201).end();
     } catch(err) {        
