@@ -36,22 +36,20 @@ block content
         <!-- The Modal -->
         .modal#myModal
             .modal-dialog
-                .modal-content                
+                .modal-content
                     <!-- Modal Header -->
                     .modal-header
                         h4.modal-title
-                        button.close(type="button" data-dismiss="modal") &times;                    
+                        button.close(type="button" data-dismiss="modal") &times;
                     <!-- Modal body -->
-                    .modal-body                    
+                    .modal-body
                     <!-- Modal footer -->
                     .modal-footer
                         button.btn.btn-secondary.choiceRestaurant(type="button" data-dismiss="modal") 다시 선택
                         button.btn.btn-success.decisionRestaurant(type="button" data-dismiss="modal") 결정
                         button.btn.btn-danger(type="button" data-dismiss="modal") 닫기
 
-    script(type='text/javascript', src='https://code.jquery.com/jquery-3.4.0.min.js')
-    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
-    script(type='text/javascript', src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+    include ./partials/javascripts
 
 block javascript
     script(type='text/javascript', src='/js/notify.min.js')
