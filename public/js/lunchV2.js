@@ -198,10 +198,21 @@ const onClickDecisionRestaurant = () => {
  * @param {no} 식당 아이디
  */
 function onClickRemove(no) {
-    if (!confirm("식당을 삭제 하시겠습니까??")) {
-        return;
-    }
+    // if (!confirm("식당을 삭제 하시겠습니까??")) {
+    //     return;
+    // }
+    BootstrapDialog.confirm("식당을 삭제 하시겠습니까??", result => {
+        if (result) {
+            removeRestaurant(no);
+        }
+    });
+}
 
+/**
+ * 식당 삭제
+ * @param {no} 식당 아이디
+ */
+function removeRestaurant(no) {
     $(".loading").show();
 
     $.ajax({
@@ -223,9 +234,6 @@ function onClickRemove(no) {
 }
 
 $(function() {
-    BootstrapDialog.show({
-        message: "Hi Apple!"
-    });
     showRestaurantList();
     $(".addRestaurant").click(function() {
         onClickAddRestaurant();
