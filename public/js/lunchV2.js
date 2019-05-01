@@ -76,9 +76,8 @@ function showRestaurantList() {
         });
 }
 
-const notify = (text, type, offsetY = 400) => {
+const notify = (text, type, offsetY = 100) => {
     $.notify(text, {
-        width: 100,
         offset: {
             x: 0,
             y: offsetY
@@ -86,8 +85,12 @@ const notify = (text, type, offsetY = 400) => {
         spacing: 20,
         z_index: 1031,
         type,
+        placement: {
+            from: "top",
+            align: "center"
+        },
         allow_dismiss: true,
-        delay: 100,
+        delay: 1000,
         timer: 500
     });
 };
