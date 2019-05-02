@@ -1,33 +1,39 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const router = require('./routes');
-const mongoose = require('mongoose');
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
+const router = require("./routes");
+const mongoose = require("mongoose");
+const favicon = require("serve-favicon");
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
 
 // MongoDB 데이터베이스 접속하기
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true })
+mongoose
+    .connect(process.env.MONGO_URI, { useNewUrlParser: true })
     .then(() => {
-        console.log('Successfully connected to MongoDB');
-    }).catch(e => {
-        console.error('Connection error: ', e);
+        console.log("Successfully connected to MongoDB");
+    })
+    .catch(e => {
+        console.error("Connection error: ", e);
     });
 
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+);
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // //////////// router 설정 //////////////////////
 app.use(router);
@@ -37,5 +43,5 @@ app.use(router);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log('GD Lunch app listening on port 3000!');
+    console.log("GD Lunch app listening on port 3000!");
 });
