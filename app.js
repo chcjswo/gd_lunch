@@ -12,7 +12,12 @@ mongoose.Promise = global.Promise;
 
 // MongoDB 데이터베이스 접속하기
 mongoose
-    .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+    .connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        poolSize: 10,
+        reconnectTries: Number.MAX_VALUE,
+        reconnectInterval: 1000
+    })
     .then(() => {
         console.log("Successfully connected to MongoDB");
     })
