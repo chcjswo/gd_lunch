@@ -1,48 +1,73 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+
+const BUILD_DIR = path.resolve(__dirname, "dist/js");
+const APP_DIR = path.resolve(__dirname, "./public/");
 
 module.exports = {
-    entry: [
-        "@babel/polyfill",
-        "./public/js/lunchV1.js",
-        "./pubc/cscc/loading.css",
-        "./pubc/cscc/offcanvas.css"
-    ],
+    mode: "production",
+    entry: {
+        js_lib: ["jquery", "bootstrap", "underscore"],
+        lunchV1: ["@babel/polyfill", "./public/js/lunchV1.js"],
+        lunchV2: ["@babel/polyfill", "./public/js/lunchV2.js"]
+    },
     // 컴파일 + 번들링된 js 파일이 저장될 경로와 이름 지정
     output: {
-        path: path.resolve(__dirname, "dist/js"),
-        filename: "bundle.js"
+        path: BUILD_DIR,
+        filename: "[name].js",
+        publicPath: "/dist/"
     },
-    plugins: [
-        // 컴파일 + 번들링 CSS 파일이 저장될 경로와 이름 지정
-        new MiniCssExtractPlugin({ filename: "dist/css/style.css" })
-    ],
     module: {
         rules: [
             {
                 test: /\.js$/,
-                include: [path.resolve(__dirname, "public/js")],
-                exclude: /node_modules/,
+                include: [`${APP_DIR}`],
+                exclude: ["/node_modules"],
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["@babel/preset-env"]
+                        presets: [
+                            [
+                                "@babel/preset-env",
+                                {
+                                    targets: { node: "current" },
+                                    modules: "false"
+                                }
+                            ]
+                        ]
                     }
                 }
             },
+            // {
+            //     test: /\.css$/,
+            //     use: [
+            //         MiniCssExtractPlugin.loader,
+            //         "css-loader",
+            //         "sass-loader?outputStyle=expanded"
+            //         // 'sass-loader?outputStyle=compressed'
+            //     ],
+            //     exclude: /node_modules/
+            // }
             {
                 test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader",
-                    "sass-loader?outputStyle=expanded"
-                    // 'sass-loader?outputStyle=compressed'
-                ],
-                exclude: /node_modules/
+                include: [`${APP_DIR}`],
+                use: ["style-loader", "css-loader"]
+                // use: [MiniCssExtractPlugin.loader, "css-loader"]
+                // exclude: ["/node_modules"]
             }
         ]
     },
+    plugins: [
+        // 컴파일 + 번들링 CSS 파일이 저장될 경로와 이름 지정
+        new MiniCssExtractPlugin({ filename: "dist/css/style.css" })
+        // new MiniCssExtractPlugin({ filename: "app.css" })
+        // new UglifyJsPlugin()
+    ],
     devtool: "source-map",
-    // https://webpack.js.org/concepts/mode/#mode-development
-    mode: "development"
+    optimization: {
+        minimize: true,
+        splitChunks: {},
+        concatenateModules: true
+    }
 };
