@@ -1,28 +1,37 @@
 const path = require("path");
 const webpack = require("webpack");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const BUILD_DIR = path.resolve(__dirname, "public/js");
+const BUILD_DIR = path.resolve(__dirname, "./public");
 const APP_DIR = path.resolve(__dirname, "./src/");
 
 module.exports = {
-    mode: "production",
+    mode: process.env.NODE_ENV || "development",
     entry: {
         vendor: ["jquery", "lodash"],
-        lunchV1: ["./src/js/notify.min.js", "./src/js/lunchV1.js"],
-        lunchV2: ["./src/js/notify.min.js", "./src/js/lunchV2.js"]
+        lunchV1: [
+            "./src/js/notify.min.js",
+            "./src/js/lunchV1.js",
+            "./src/css/offcanvas.css",
+            "./src/css/loading.css"
+        ],
+        lunchV2: [
+            "./src/js/notify.min.js",
+            "./src/js/lunchV2.js",
+            "./src/css/offcanvas.css",
+            "./src/css/loading.css"
+        ]
     },
     // 컴파일 + 번들링된 js 파일이 저장될 경로와 이름 지정
     output: {
-        path: BUILD_DIR,
-        filename: "[name].js",
-        publicPath: "/public/"
+        path: `${BUILD_DIR}/js`,
+        filename: "[name].js"
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                include: [`${APP_DIR}`],
+                // include: [`${APP_DIR}`],
                 exclude: ["/node_modules"],
                 use: {
                     loader: "babel-loader",
@@ -41,23 +50,40 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
+                // use: ExtractTextPlugin.extract({
+                //     fallback: "style-loader",
+                //     use: "css-loader"
+                // })
+                use: [MiniCssExtractPlugin.loader, "css-loader"]
+            },
+            {
+                test: /\.(gif|jpg|png|svg)$/,
+                use: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            name: "../img/[name].[ext]"
+                        }
+                    }
+                ]
             }
         ]
     },
     plugins: [
-        // new ExtractTextPlugin("styles.css")
+        // new ExtractTextPlugin("styles.css"),
         // 컴파일 + 번들링 CSS 파일이 저장될 경로와 이름 지정
         // new MiniCssExtractPlugin({ filename: "app.css" })
         // new UglifyJsPlugin()
         new webpack.ProvidePlugin({
             $: "jquery"
+        }),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "../css/[name].css"
         })
     ],
-    devtool: "source-map",
+    // devtool: "source-map",
     // optimization: {
     //     minimize: true,
     //     splitChunks: {},
