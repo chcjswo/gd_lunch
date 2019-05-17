@@ -37,8 +37,8 @@ app.use(
         extended: true
     })
 );
-app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(favicon(path.join(__dirname, "src", "favicon.ico")));
+app.use(express.static(path.join(__dirname, "src")));
 
 // //////////// router 설정 //////////////////////
 app.use(router);

@@ -32,7 +32,9 @@ const makeRestaurantItem = data => {
 			<div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
 				<div class="d-flex justify-content-between align-items-center w-100">
 					<strong class="text-gray-dark">${item.name}</strong>
-					<a href="#" onClick="onClickRemove('${item._id}', '${item.name}')">삭제</a>
+					<a href="#" onClick="onClickRemove('${item._id}', '${item.name}', ${
+            item.visitCount
+        })">삭제</a>
 				</div>
 				<span class="d-block">
 					<span id="v-${item._id}">${item.visitCount}</span>번 방문 /
@@ -200,8 +202,14 @@ const onClickDecisionRestaurant = () => {
  * 식당 삭제 클릭 이벤트
  * @param {no} 식당 아이디
  * @param {name} 식당 이름
+ * @param {visitCount} 방문 횟수
  */
-function onClickRemove(no, name) {
+function onClickRemove(no, name, visitCount) {
+    if (visitCount > 0) {
+        notify("방문한적이 있는 식당은 삭제가 안됩니다.", "danger", 10);
+        return;
+    }
+
     BootstrapDialog.confirm(
         `<b><font size='4' color='#FF5544'>${name}</font></b>을(를) 삭제 하시겠습니까??`,
         result => {

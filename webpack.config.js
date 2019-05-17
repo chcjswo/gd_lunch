@@ -3,12 +3,12 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const BUILD_DIR = path.resolve(__dirname, "./public");
-const APP_DIR = path.resolve(__dirname, "./src/");
+const APP_DIR = path.resolve(__dirname, "./src");
 
 module.exports = {
-    mode: process.env.NODE_ENV || "development",
+    mode: "production",
     entry: {
-        vendor: ["jquery", "lodash"],
+        vendor: ["jquery"],
         lunchV1: [
             "./src/js/notify.min.js",
             "./src/js/lunchV1.js",
@@ -50,22 +50,27 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                // use: ExtractTextPlugin.extract({
-                //     fallback: "style-loader",
-                //     use: "css-loader"
-                // })
-                use: [MiniCssExtractPlugin.loader, "css-loader"]
-            },
-            {
-                test: /\.(gif|jpg|png|svg)$/,
                 use: [
                     {
-                        loader: "file-loader",
+                        loader: MiniCssExtractPlugin.loader,
                         options: {
-                            name: "../img/[name].[ext]"
+                            minimize: true
                         }
-                    }
+                    },
+                    "css-loader"
                 ]
+            },
+            {
+                test: /\.(svg|png|jpg|jpeg|gif)$/,
+                // include: APP_DIR + "/images/",
+                use: {
+                    loader: "file-loader",
+                    options: {
+                        //     publicPath: BUILD_DIR,
+                        name: "[name].[ext]"
+                        // outputPath: BUILD_DIR + "/images/"
+                    }
+                }
             }
         ]
     },
@@ -75,7 +80,8 @@ module.exports = {
         // new MiniCssExtractPlugin({ filename: "app.css" })
         // new UglifyJsPlugin()
         new webpack.ProvidePlugin({
-            $: "jquery"
+            $: "jquery",
+            jQuery: "jquery"
         }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
