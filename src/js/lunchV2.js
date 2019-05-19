@@ -61,13 +61,14 @@ function showRestaurantList() {
             $(".restaurantList").append(
                 makeRestaurantItem(data.restaurantList)
             );
-            if (data.restaurantName) {
-                $("#today").html(`${data.lunchDate} 선택된 식당`);
+            if (data.restaurant) {
+                $("#today").html(`${data.restaurant.lunch_ate} 선택된 식당`);
                 $("#todayRestaurant").html(
-                    `오늘은 <b>${data.restaurantName}</b> 입니다.`
+                    `오늘은 <b>${data.restaurant.restaurant_name}</b> 입니다.`
                 );
                 $("#todayLunch").show();
                 $("#isDecistion").val("Y");
+                $("#todayLunchId").val(data.restaurant._id);
             }
         })
         .fail(function(data) {
@@ -218,12 +219,6 @@ function onClickRemove(no, name, visitCount) {
             }
         }
     );
-
-    // bsWindow.confirm("식당을 삭제 하시겠습니까??", "식당 삭제", function(res) {
-    //     if (res) {
-    //         removeRestaurant(no);
-    //     }
-    // });
 }
 
 /**
@@ -236,12 +231,39 @@ function removeRestaurant(no) {
     $.ajax({
         type: "delete",
         contentType: "application/json",
-        url: "/api/v2/lunch",
+        url: "/api/v2/lunch/restaurant",
         data: JSON.stringify({ no })
     })
         .done(function() {
             $("#r-" + no).remove();
             notify("삭제 했습니다.", "success", 10);
+        })
+        .fail(function(data) {
+            alert(data.responseJSON.message);
+        })
+        .always(function() {
+            $(".loading").hide();
+        });
+}
+
+/**
+ * 식당 재선택
+ */
+function onClickReChoiceRestaurant() {
+    $(".loading").show();
+
+    $.ajax({
+        type: "delete",
+        contentType: "application/json",
+        url: "/api/v2/lunch",
+        data: JSON.stringify({ no })
+    })
+        .done(function() {
+            // $("#r-" + no).remove();
+            // notify("삭제 했습니다.", "success", 10);
+            $("#todayLunch").hide();
+            $("#isDecistion").val("N");
+            onClickChoiceRestaurant();
         })
         .fail(function(data) {
             alert(data.responseJSON.message);
@@ -261,6 +283,9 @@ $(function() {
     });
     $(".decisionRestaurant").click(function() {
         onClickDecisionRestaurant();
+    });
+    $(".reChoiceRestaurant").click(function() {
+        onClickReChoiceRestaurant();
     });
     $("#restaurantName").keydown(function(key) {
         if (key.keyCode == 13) {

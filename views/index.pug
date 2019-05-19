@@ -17,6 +17,8 @@ block content
                         span#today
                 .card-body
                     h5.card-title#todayRestaurant
+                .card-footer
+                    .btn.btn-dark.btn-sm.reChoiceRestaurant 식당 재선택
             .my-3.p-3.bg-white.rounded.shadow-sm.restaurantList
                 h6.border-bottom.border-gray.pb-2.mb-0 등록된 식당 목록
         .col-md-6.order-md-2
@@ -36,6 +38,7 @@ block content
         input#choiceRestaurantNo(type="hidden")
         input#choiceRestaurantName(type="hidden")
         input#isDecistion(type="hidden" value="N")
+        input#todayLunchId(type="hidden")
         <!-- The Modal -->
         .modal#myModal
             .modal-dialog

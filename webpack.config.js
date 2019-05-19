@@ -9,12 +9,6 @@ module.exports = {
     mode: "production",
     entry: {
         vendor: ["jquery"],
-        lunchV1: [
-            "./src/js/notify.min.js",
-            "./src/js/lunchV1.js",
-            "./src/css/offcanvas.css",
-            "./src/css/loading.css"
-        ],
         lunchV2: [
             "./src/js/notify.min.js",
             "./src/js/lunchV2.js",

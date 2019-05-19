@@ -1,33 +1,33 @@
 {
-	"development": {
-		"username": "mocadev",
-		"password": "vhl172mHXIU8sA$kbYOV",
-		"database": "GD_LUNCH",
-		"host": "mocadev.cuav2dz6zs0k.ap-northeast-2.rds.amazonaws.com",
-		"dialect": "mysql",
-		"pool": {
-			"max": 5,
-			"min": 0,
-			"idle": 10000
-		},
+    "development": {
+        "username": "localhost",
+        "password": "6TQ&#7^ywjG2i3U8Z!a0",
+        "database": "localhost",
+        "host": "localhost",
+        "dialect": "mysql",
+        "pool": {
+            "max": 5,
+            "min": 0,
+            "idle": 10000
+        },
         "logging": true,
         "operatorsAliases": false,
         "define": {
             "timestamps": false,
             "underscored": true
         }
-	},
-	"production": {
-		"username": "mocadev",
-		"password": "vhl172mHXIU8sA$kbYOV",
-		"database": "GD_LUNCH",
-		"host": "mocadev.cuav2dz6zs0k.ap-northeast-2.rds.amazonaws.com",
-		"dialect": "mysql",
-		"pool": {
-			"max": 5,
-			"min": 0,
-			"idle": 10000
-		},
-		"logging": false
-	}
+    },
+    "production": {
+        "username": "localhost",
+        "password": "localhost",
+        "database": "localhost",
+        "host": "localhost",
+        "dialect": "mysql",
+        "pool": {
+            "max": 5,
+            "min": 0,
+            "idle": 10000
+        },
+        "logging": false
+    }
 }
