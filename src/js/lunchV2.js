@@ -62,7 +62,7 @@ function showRestaurantList() {
                 makeRestaurantItem(data.restaurantList)
             );
             if (data.restaurant) {
-                $("#today").html(`${data.restaurant.lunch_ate} 선택된 식당`);
+                $("#today").html(`${data.restaurant.lunch_date} 선택된 식당`);
                 $("#todayRestaurant").html(
                     `오늘은 <b>${data.restaurant.restaurant_name}</b> 입니다.`
                 );
