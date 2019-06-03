@@ -69,6 +69,7 @@ function showRestaurantList() {
                 $("#todayLunch").show();
                 $("#isDecistion").val("Y");
                 $("#todayLunchId").val(data.restaurant._id);
+                $("#todayRestaurantName").val(data.restaurant.restaurant_name);
             }
         })
         .fail(function(data) {
@@ -138,13 +139,24 @@ function addRestaurant() {
  */
 const onClickChoiceRestaurant = () => {
     choiceRestaurant();
-}
+};
 function choiceRestaurant() {
     if ($("#isDecistion").val() === "Y") {
-        notify("오늘은 이미 식당이 결정 됐습니다.", "info", 10);
-        return;
-    }
+        const restaurantName = $("#todayRestaurantName").val();
 
+        BootstrapDialog.confirm(
+            // `<b><font size='4' color='#FF5544'>${name}</font></b>을(를) 삭제 하시겠습니까??`,
+            `오늘은 이미 <b><font size='4' color='#FF5544'>${restaurantName}</font></b>으로 결정 됐습니다.
+            다시 선택 하시겠습니까?`,
+            result => {
+                if (result) {
+                    reChoice();
+                }
+            }
+        );
+    }
+}
+function reChoice() {
     $(".loading").show();
 
     $.ajax({
@@ -175,7 +187,7 @@ function choiceRestaurant() {
  */
 const onClickDecisionRestaurant = () => {
     decisionRestaurant();
-}
+};
 
 function decisionRestaurant() {
     $(".loading").show();
@@ -272,11 +284,9 @@ function reChoiceRestaurant() {
         data: JSON.stringify({ no })
     })
         .done(function() {
-            // $("#r-" + no).remove();
-            // notify("삭제 했습니다.", "success", 10);
             $("#todayLunch").hide();
             $("#isDecistion").val("N");
-            onClickChoiceRestaurant();
+            choiceRestaurant();
         })
         .fail(function(data) {
             alert(data.responseJSON.message);
@@ -298,7 +308,7 @@ $(function() {
         onClickDecisionRestaurant();
     });
     $(".reChoiceRestaurant").click(function() {
-        onClickReChoiceRestaurant();
+        onClickChoiceRestaurant();
     });
     $("#restaurantName").keydown(function(key) {
         if (key.keyCode == 13) {
