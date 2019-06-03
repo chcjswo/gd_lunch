@@ -9,7 +9,7 @@ block content
             .d-flex.align-items-center.p-3.my-3.text-white-50.bg-purple.rounded.shadow-sm
                 img.mr-3(src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-outline.svg" alt="" width="48" height="48")
                 .lh-100
-                    h6.mb-0.text-white.lh-100 개발 2팀 점심 뭐 먹지??
+                    h6.mb-0.text-white.lh-100 구디에서 점심 뭐 먹지??
                     small Since 2019-04-20
             .card.mb-4.shadow-sm#todayLunch(style="display: none")
                 .card-header
@@ -40,7 +40,23 @@ block content
         input#isDecistion(type="hidden" value="N")
         input#todayLunchId(type="hidden")
         <!-- The Modal -->
-        .modal#myModal
+        .modal#restaurantModal
+            .modal-dialog
+                .modal-content
+                    <!-- Modal Header -->
+                    .modal-header
+                        h4.modal-title
+                        button.close(type="button" data-dismiss="modal") &times;
+                    <!-- Modal body -->
+                    .modal-body
+                    <!-- Modal footer -->
+                    .modal-footer
+                        button.btn.btn-secondary.choiceRestaurant(type="button" data-dismiss="modal") 다시 선택
+                        button.btn.btn-success.decisionRestaurant(type="button" data-dismiss="modal") 결정
+                        button.btn.btn-danger(type="button" data-dismiss="modal") 닫기
+                        
+        <!-- The Modal -->
+        .modal#reChoiceModal
             .modal-dialog
                 .modal-content
                     <!-- Modal Header -->

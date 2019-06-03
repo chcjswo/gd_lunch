@@ -5,8 +5,8 @@
     "license": "MIT",
     "scripts": {
         "build": "webpack",
-        "start": "node app.js",
-        "heroku-postbuild": "webpack --config webpack.config.js"
+        "start": "node app.js"
+        // "heroku-postbuild": "webpack --config webpack.config.js"
     },
     "dependencies": {
         "body-parser": "^1.18.3",
