@@ -150,29 +150,67 @@ function choiceRestaurant() {
             다시 선택 하시겠습니까?`,
             result => {
                 if (result) {
-                    reChoice();
+                    $("#isDecistion").val("N");
+                    removeLunch();
                 }
             }
         );
+        return;
     }
+
+    choice();
 }
-function reChoice() {
+function choice() {
     $(".loading").show();
+
+    const todayLunchId = $("#todayLunchId").val();
+    console.log("todayLunchId ====> ", todayLunchId);
 
     $.ajax({
         type: "post",
         contentType: "application/json",
-        url: "/api/v2/lunch/choice"
+        url: "/api/v2/lunch/choice",
+        data: JSON.stringify({ todayLunchId })
     })
         .done(function(data) {
             $("#todayLunch").hide();
             $("#restaurantModal").modal();
 
+            const restaurantName = data.name;
+
             $(".modal-title").html(`${getCurrentDate()} 점심 식당은??`);
-            $(".modal-body").html(`오늘은 <b>${data.name}</b> 어떤가요???`);
+            $(".modal-body").html(
+                `오늘은 <b>${restaurantName}</b> 어떤가요???`
+            );
             $("#c-" + data._id).html(data.choiceCount);
             $("#choiceRestaurantNo").val(data._id);
-            $("#choiceRestaurantName").val(data.name);
+            $("#choiceRestaurantName").val(restaurantName);
+            $("#todayRestaurantName").val(restaurantName);
+        })
+        .fail(function(data) {
+            alert(data.responseJSON.message);
+        })
+        .always(function() {
+            $(".loading").hide();
+        });
+}
+
+/**
+ * 오늘의 점심 삭제
+ */
+function removeLunch() {
+    $(".loading").show();
+
+    const lunchId = $("#todayLunchId").val();
+
+    $.ajax({
+        type: "delete",
+        contentType: "application/json",
+        url: "/api/v2/lunch/today",
+        data: JSON.stringify({ lunchId })
+    })
+        .done(function() {
+            choice();
         })
         .fail(function(data) {
             alert(data.responseJSON.message);
@@ -194,14 +232,19 @@ function decisionRestaurant() {
 
     const restaurantNo = $("#choiceRestaurantNo").val();
     const restaurantName = $("#choiceRestaurantName").val();
+    const lunchId = $("#todayLunchId").val();
 
     $.ajax({
         type: "post",
         contentType: "application/json",
         url: "/api/v2/lunch/decision",
-        data: JSON.stringify({ no: restaurantNo })
+        data: JSON.stringify({
+            no: restaurantNo,
+            lunchId
+        })
     })
-        .done(function() {
+        .done(function(result) {
+            console.log("result ==> ", result);
             let visitCount = parseInt($("#v-" + restaurantNo).html());
             visitCount++;
             $("#v-" + restaurantNo).html(visitCount);
@@ -212,6 +255,7 @@ function decisionRestaurant() {
             );
             $("#todayLunch").show();
             $("#isDecistion").val("Y");
+            $("#todayLunchId").val(result._id);
         })
         .fail(function(data) {
             alert(data.responseJSON.message);

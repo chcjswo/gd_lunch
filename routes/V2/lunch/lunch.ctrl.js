@@ -27,10 +27,6 @@ const list = async (req, res) => {
 
         return res.json({
             restaurantList,
-            // restaurantName: lunchRestaurant
-            //     ? lunchRestaurant.restaurant_name
-            //     : "",
-            // lunchDate: lunchRestaurant ? lunchRestaurant.lunch_date : ""
             restaurant: lunchRestaurant
         });
     } catch (err) {
@@ -126,21 +122,21 @@ const removeRestaurant = async (req, res) => {
  * 랜덤 식당 선택
  */
 const choice = async (req, res) => {
-    const restaurantList = await Restaurant.find();
-    const index = Math.floor(Math.random() * restaurantList.length);
-    const restaurantData = restaurantList[index];
-
-    // 선택 카운트 업데이트
-    restaurantData.choiceCount++;
-
     try {
+        const restaurantList = await Restaurant.find();
+        const index = Math.floor(Math.random() * restaurantList.length);
+        const restaurantData = restaurantList[index];
+
+        // 선택 카운트 업데이트
+        restaurantData.choiceCount++;
+
         await Restaurant.updateOne(
             {
                 _id: restaurantData._id
             },
             {
-                $set: {
-                    choiceCount: restaurantData.choiceCount
+                $inc: {
+                    choiceCount: 1
                 }
             }
         );
@@ -153,7 +149,7 @@ const choice = async (req, res) => {
 
         return res.status(201).json(restaurantData);
     } catch (err) {
-        console.error("error ==> ", err);
+        console.error("error ==> ", err.message);
         return res.status(500).json({
             message: "식당 선택중 에러가 발생했습니다."
         });
@@ -204,6 +200,8 @@ const decision = async (req, res) => {
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
+        console.log("resultRestaurant ===> ", resultRestaurant);
+
         return res.status(201).json({ result: resultRestaurant });
     } catch (err) {
         console.error("error ==> ", err);
@@ -213,9 +211,33 @@ const decision = async (req, res) => {
     }
 };
 
+/**
+ * 오늘의 점심 삭제
+ */
+const removeTodayLunch = async (req, res) => {
+    const lunchId = req.body.lunchId || null;
+
+    try {
+        // 오늘 날짜의 선택된 식당 삭제
+        if (lunchId !== null) {
+            await Lunch.deleteOne({
+                _id: lunchId
+            });
+        }
+
+        return res.status(201).end();
+    } catch (err) {
+        console.error("error ==> ", err);
+        return res.status(500).json({
+            message: "오늘의 점심 삭제중 에러가 발생했습니다."
+        });
+    }
+};
+
 module.exports = {
     list,
     create,
+    removeTodayLunch,
     removeLunch,
     removeRestaurant,
     choice,
