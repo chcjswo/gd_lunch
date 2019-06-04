@@ -67,8 +67,10 @@ const create = async (req, res) => {
  */
 const removeLunch = async (req, res) => {
     try {
+        const lunchId = req.body.lunchId || null;
+
         const result = await Lunch.remove({
-            _id: no
+            _id: lunchId
         });
 
         if (!result) {
@@ -127,6 +129,12 @@ const choice = async (req, res) => {
         const index = Math.floor(Math.random() * restaurantList.length);
         const restaurantData = restaurantList[index];
 
+        const lunchId = req.body.lunchId || null;
+
+        await Lunch.remove({
+            lunch_date: getCurrentDate()
+        });
+
         // 선택 카운트 업데이트
         restaurantData.choiceCount++;
 
@@ -169,6 +177,12 @@ const decision = async (req, res) => {
     }
 
     try {
+        const lunchId = req.body.lunchId || null;
+
+        await Lunch.remove({
+            _id: lunchId
+        });
+
         // 방문수 업데이트
         const result = await Restaurant.updateOne(
             {

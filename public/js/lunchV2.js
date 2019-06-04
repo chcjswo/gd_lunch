@@ -145,7 +145,6 @@ function choiceRestaurant() {
         const restaurantName = $("#todayRestaurantName").val();
 
         BootstrapDialog.confirm(
-            // `<b><font size='4' color='#FF5544'>${name}</font></b>을(를) 삭제 하시겠습니까??`,
             `오늘은 이미 <b><font size='4' color='#FF5544'>${restaurantName}</font></b>으로 결정 됐습니다.
             다시 선택 하시겠습니까?`,
             result => {
@@ -163,14 +162,14 @@ function choiceRestaurant() {
 function choice() {
     $(".loading").show();
 
-    const todayLunchId = $("#todayLunchId").val();
-    console.log("todayLunchId ====> ", todayLunchId);
+    const lunchId = $("#todayLunchId").val();
+    console.log("lunchId ====> ", lunchId);
 
     $.ajax({
         type: "post",
         contentType: "application/json",
         url: "/api/v2/lunch/choice",
-        data: JSON.stringify({ todayLunchId })
+        data: JSON.stringify({ lunchId })
     })
         .done(function(data) {
             $("#todayLunch").hide();
