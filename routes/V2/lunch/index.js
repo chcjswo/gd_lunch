@@ -5,9 +5,8 @@ const ctrl = require("./lunch.ctrl");
 
 router.get("/", ctrl.list);
 router.post("/", ctrl.create);
-router.delete("/", ctrl.removeLunch);
+// router.delete("/", ctrl.removeLunch);
 router.delete("/restaurant", ctrl.removeRestaurant);
-router.delete("/today", ctrl.removeTodayLunch);
 router.post("/choice", ctrl.choice);
 router.post("/decision", ctrl.decision);
 
