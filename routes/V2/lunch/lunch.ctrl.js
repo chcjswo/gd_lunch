@@ -1,6 +1,35 @@
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
 
+const randomRestaurant = async () => {
+    console.log('randomRestaurant =');
+    const restaurantList = await Restaurant.find();
+    const index = Math.floor(Math.random() * restaurantList.length);
+    const restaurantData = restaurantList[index];
+
+    await Lunch.deleteOne({
+        lunch_date: getCurrentDate()
+    });
+
+    // 선택 카운트 업데이트
+    restaurantData.choiceCount++;
+
+    await Restaurant.updateOne(
+        {
+            _id: restaurantData._id
+        },
+        {
+            $inc: {
+                choiceCount: 1
+            }
+        }
+    );
+
+    console.log(restaurantData);
+
+    return restaurantData;
+};
+
 const getCurrentDate = () => {
     const d = new Date();
 
@@ -125,27 +154,13 @@ const removeRestaurant = async (req, res) => {
  */
 const choice = async (req, res) => {
     try {
-        const restaurantList = await Restaurant.find();
-        const index = Math.floor(Math.random() * restaurantList.length);
-        const restaurantData = restaurantList[index];
+        const restaurantData = randomRestaurant();
 
-        await Lunch.deleteOne({
-            lunch_date: getCurrentDate()
-        });
-
-        // 선택 카운트 업데이트
-        restaurantData.choiceCount++;
-
-        await Restaurant.updateOne(
-            {
-                _id: restaurantData._id
-            },
-            {
-                $inc: {
-                    choiceCount: 1
-                }
-            }
-        );
+        if (!restaurantData) {
+            return res.status(404).json({
+                message: "선택할 식당이 없습니다."
+            });
+        }
 
         if (!restaurantData) {
             return res.status(404).json({
@@ -219,11 +234,36 @@ const decision = async (req, res) => {
     }
 };
 
+
+
+/**
+ * 랜덤 식당 선택 후 슬랙으로 메시지 보내기
+ */
+const sendSlack = async (req, res) => {
+    try {
+        const restaurantData = randomRestaurant();
+
+        if (!restaurantData) {
+            return res.status(404).json({
+                message: "선택할 식당이 없습니다."
+            });
+        }
+
+        return res.status(201).json(restaurantData);
+    } catch (err) {
+        console.error("error ==> ", err.message);
+        return res.status(500).json({
+            message: "식당 선택중 에러가 발생했습니다."
+        });
+    }
+};
+
 module.exports = {
     list,
     create,
     // removeLunch,
     removeRestaurant,
     choice,
-    decision
+    decision,
+    sendSlack
 };

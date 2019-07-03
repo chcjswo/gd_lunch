@@ -9,5 +9,6 @@ router.post("/", ctrl.create);
 router.delete("/restaurant", ctrl.removeRestaurant);
 router.post("/choice", ctrl.choice);
 router.post("/decision", ctrl.decision);
+router.get("/sendSlack", ctrl.sendSlack);
 
 module.exports = router;
