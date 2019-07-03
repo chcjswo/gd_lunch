@@ -21,6 +21,7 @@
         "pug": "^2.0.3",
         "sequelize": "^5.7.1",
         "serve-favicon": "^2.5.0",
+        "slack-node": "^0.1.8",
         "slackbots": "^1.2.0"
     },
     "devDependencies": {
