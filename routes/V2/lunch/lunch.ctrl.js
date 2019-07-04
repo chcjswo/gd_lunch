@@ -1,3 +1,5 @@
+const request = require('request');
+
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
 
@@ -231,8 +233,6 @@ const decision = async (req, res) => {
     }
 };
 
-
-
 /**
  * 랜덤 식당 선택 후 슬랙으로 메시지 보내기
  */
@@ -246,7 +246,27 @@ const sendSlack = async (req, res) => {
             });
         }
 
-        return res.status(201).json(restaurantData);
+        const data = {
+            username: '점심 뭐 먹지??',
+            text: `${getCurrentDate()} 오늘의 점심은 ${restaurantData.name} 어떠세요?`,
+            icon_emoji: ':rice:'
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36',
+                'Content-type': 'application/json'
+            },
+            json: data
+        };
+
+        const uri = 'https://hooks.slack.com/services/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';
+
+        request(uri, options, () => {
+            return res.status(201).end();
+        });
+
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.status(500).json({
