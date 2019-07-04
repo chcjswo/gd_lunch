@@ -263,7 +263,7 @@ const sendSlack = async (req, res) => {
 
         const uri = 'https://hooks.slack.com/services/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';
 
-        request(uri, options, () => {
+        request(process.env.DEV2_SLACK_RUL, options, () => {
             return res.status(201).end();
         });
 
