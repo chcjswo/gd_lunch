@@ -2,7 +2,6 @@ const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
 
 const randomRestaurant = async () => {
-    console.log('randomRestaurant =');
     const restaurantList = await Restaurant.find();
     const index = Math.floor(Math.random() * restaurantList.length);
     const restaurantData = restaurantList[index];
@@ -24,8 +23,6 @@ const randomRestaurant = async () => {
             }
         }
     );
-
-    console.log(restaurantData);
 
     return restaurantData;
 };
@@ -154,7 +151,7 @@ const removeRestaurant = async (req, res) => {
  */
 const choice = async (req, res) => {
     try {
-        const restaurantData = randomRestaurant();
+        const restaurantData = await randomRestaurant();
 
         if (!restaurantData) {
             return res.status(404).json({
@@ -241,7 +238,7 @@ const decision = async (req, res) => {
  */
 const sendSlack = async (req, res) => {
     try {
-        const restaurantData = randomRestaurant();
+        const restaurantData = await randomRestaurant();
 
         if (!restaurantData) {
             return res.status(404).json({
