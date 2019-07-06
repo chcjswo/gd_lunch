@@ -261,12 +261,9 @@ const sendSlack = async (req, res) => {
             json: data
         };
 
-        const uri = 'https://hooks.slack.com/services/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';
-
-        request(process.env.DEV2_SLACK_RUL, options, () => {
+        request(process.env.DEV2_SLACK_URL, options, () => {
             return res.status(201).end();
         });
-
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.status(500).json({
