@@ -1,4 +1,4 @@
-const request = require('request');
+const Slack = require('slack-node');
 
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
@@ -15,16 +15,13 @@ const randomRestaurant = async () => {
     // 선택 카운트 업데이트
     restaurantData.choiceCount++;
 
-    await Restaurant.updateOne(
-        {
-            _id: restaurantData._id
-        },
-        {
-            $inc: {
-                choiceCount: 1
-            }
+    await Restaurant.updateOne({
+        _id: restaurantData._id
+    }, {
+        $inc: {
+            choiceCount: 1
         }
-    );
+    });
 
     return restaurantData;
 };
@@ -224,7 +221,7 @@ const decision = async (req, res) => {
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
-        return res.status(201).json({ result: resultRestaurant });
+        return res.status(201).json({result: resultRestaurant});
     } catch (err) {
         console.error("error ==> ", err);
         return res.status(500).json({
@@ -246,22 +243,108 @@ const sendSlack = async (req, res) => {
             });
         }
 
-        const data = {
+        // const options = {
+        //     method: 'POST',
+        //     headers: {
+        //         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36',
+        //         'Content-type': 'application/json'
+        //     },
+        //     json: data
+        // };
+        //
+        // request(process.env.DEV2_SLACK_URL, options, () => {
+        //     return res.status(201).end();
+        // });
+
+        const slack = new Slack();
+        slack.setWebhook(process.env.DEV2_SLACK_URL);
+
+        slack.webhook({
+            // username: '점심 뭐 먹지??',
+            // text: `${getCurrentDate()} 오늘의 점심은 ${restaurantData.name} 어떠세요?`,
             username: '점심 뭐 먹지??',
-            text: `${getCurrentDate()} 오늘의 점심은 ${restaurantData.name} 어떠세요?`,
-            icon_emoji: ':rice:'
-        };
+            icon_emoji: ':rice:',
+            "mrkdwn": true,
+            // "attachments": [
+            //     {
+            //         "fallback": "Required plain-text summary of the attachment.",
+            //         "color": "#2eb886",
+            //         "pretext": "Optional text that appears above the attachment block",
+            //         "author_name": "Bobby Tables",
+            //         "author_link": "http://flickr.com/bobby/",
+            //         "author_icon": "http://flickr.com/icons/bobby.jpg",
+            //         "title": "Slack API Documentation",
+            //         "title_link": "https://api.slack.com/",
+            //         "text": "Optional text that appears within the attachment",
+            //         "fields": [
+            //             {
+            //                 "title": "Priority",
+            //                 "value": "High",
+            //                 "short": false
+            //             }
+            //         ],
+            //         "image_url": "http://my-website.com/path/to/image.jpg",
+            //         "thumb_url": "http://example.com/path/to/thumb.png",
+            //         "footer": "Slack API",
+            //         "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+            //         "ts": 123456789
+            //     }
+            // ]
+            // "attachments": [
+            //     {
+            //         "text": "Choose a game to play",
+            //         "fallback": "You are unable to choose a game",
+            //         "callback_id": "wopr_game",
+            //         "color": "#3AA3E3",
+            //         "attachment_type": "default",
+            //         "actions": [
+            //             {
+            //                 "name": "game",
+            //                 "text": "Chess",
+            //                 "type": "button",
+            //                 "value": "chess"
+            //             },
+            //             {
+            //                 "name": "game",
+            //                 "text": "Falken's Maze",
+            //                 "type": "button",
+            //                 "value": "maze"
+            //             },
+            //             {
+            //                 "name": "game",
+            //                 "text": "Thermonuclear War",
+            //                 "style": "danger",
+            //                 "type": "button",
+            //                 "value": "war",
+            //                 "confirm": {
+            //                     "title": "Are you sure?",
+            //                     "text": "Wouldn't you prefer a good game of chess?",
+            //                     "ok_text": "Yes",
+            //                     "dismiss_text": "No"
+            //                 }
+            //             }
+            //         ]
+            //     }
+            // ]
+            "attachments": [{
+                "text": `${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
+                // "fallback": "Book your flights at https://flights.example.com/book/r123456",
+                "actions": [{
+                    "type": "button",
+                    "text": "점심 선택?",
+                    "url": "http://lunch.mocadev.me"
+                }, {
+                    "type": "button",
+                    "text": "다시 선택",
+                    "url": "http://lunch.mocadev.me/api/v2/lunch/slack"
+                }]
+            }]
 
-        const options = {
-            method: 'POST',
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36',
-                'Content-type': 'application/json'
-            },
-            json: data
-        };
-
-        request(process.env.DEV2_SLACK_URL, options, () => {
+        }, (err, resultRes) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
             return res.status(201).end();
         });
     } catch (err) {
