@@ -88,32 +88,6 @@ const create = async (req, res) => {
 };
 
 /**
- * 오늘의 점심 삭제
- */
-// const removeLunch = async (req, res) => {
-//     try {
-//         const lunchId = req.body.lunchId || null;
-
-//         const result = await Lunch.remove({
-//             _id: lunchId
-//         });
-
-//         if (!result) {
-//             return res.status(404).json({
-//                 message: "삭제할 오늘의 식당이 없습니다."
-//             });
-//         }
-
-//         return res.status(201).end();
-//     } catch (err) {
-//         console.error("error ==> ", err);
-//         return res.status(500).json({
-//             message: "식당 재설정중 에러가 발생했습니다."
-//         });
-//     }
-// };
-
-/**
  * 식당 삭제
  */
 const removeRestaurant = async (req, res) => {
@@ -257,7 +231,7 @@ const sendSlack = async (req, res) => {
         // });
 
         const slack = new Slack();
-        slack.setWebhook(process.env.DEV2_SLACK_URL);
+        slack.setWebhook(process.env.MOCADEV_SLACK_URL);
 
         slack.webhook({
             // username: '점심 뭐 먹지??',
@@ -331,8 +305,8 @@ const sendSlack = async (req, res) => {
                 "fallback": "Book your flights at https://flights.example.com/book/r123456",
                 "actions": [{
                     "type": "button",
-                    "text": "점심 선택?",
-                    "url": "http://lunch.mocadev.me",
+                    "text": "점심 선택",
+                    "url": `http://lunch.mocadev.me/api/v2/lunch/slack/${restaurantData._id}`,
                     "style": "primary",
                 }, {
                     "type": "button",
@@ -379,13 +353,30 @@ const sendSlack = async (req, res) => {
         });
     }
 };
+/**
+ * 식당 선택 후 슬랙으로 메시지 보내기
+ */
+const choiceSlack = async (req, res) => {
+    try {
+        const restaurantNo = req.params.no;
+
+        console.log('restaurantNo: ', restaurantNo);
+
+        return res.status(201).end(restaurantNo);
+    } catch (err) {
+        console.error("error ==> ", err.message);
+        return res.status(500).json({
+            message: "식당 선택중 에러가 발생했습니다."
+        });
+    }
+};
 
 module.exports = {
     list,
     create,
-    // removeLunch,
     removeRestaurant,
     choice,
     decision,
-    sendSlack
+    sendSlack,
+    choiceSlack
 };
