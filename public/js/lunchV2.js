@@ -211,7 +211,6 @@ function decisionRestaurant() {
         })
     })
         .done(function(result) {
-            console.log("result ==> ", result);
             let visitCount = parseInt($("#v-" + restaurantNo).html());
             visitCount++;
             $("#v-" + restaurantNo).html(visitCount);
