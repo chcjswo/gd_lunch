@@ -328,16 +328,41 @@ const sendSlack = async (req, res) => {
             // ]
             "attachments": [{
                 "text": `${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
-                // "fallback": "Book your flights at https://flights.example.com/book/r123456",
+                "fallback": "Book your flights at https://flights.example.com/book/r123456",
                 "actions": [{
                     "type": "button",
                     "text": "점심 선택?",
-                    "url": "http://lunch.mocadev.me"
+                    "url": "http://lunch.mocadev.me",
+                    "style": "primary",
                 }, {
                     "type": "button",
                     "text": "다시 선택",
-                    "url": "http://lunch.mocadev.me/api/v2/lunch/slack"
+                    "url": "http://lunch.mocadev.me/api/v2/lunch/slack",
+                    "style": "danger"
                 }]
+            //     "type": "actions",
+            //     "elements": [
+            //         {
+            //             "type": "button",
+            //             "text": {
+            //                 "type": "plain_text",
+            //                 "emoji": true,
+            //                 "text": "Approve"
+            //             },
+            //             "style": "primary",
+            //             "value": "click_me_123"
+            //         },
+            //         {
+            //             "type": "button",
+            //             "text": {
+            //                 "type": "plain_text",
+            //                 "emoji": true,
+            //                 "text": "Deny"
+            //             },
+            //             "style": "danger",
+            //             "value": "click_me_123"
+            //         }
+            //     ]
             }]
 
         }, (err, resultRes) => {
