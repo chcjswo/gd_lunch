@@ -148,6 +148,15 @@ const choice = async (req, res) => {
 };
 
 /**
+ * 점심 삭제
+ */
+const removeLunch = () => {
+    Lunch.deleteOne({
+        lunch_date: getCurrentDate()
+    });
+};
+
+/**
  * 식당 결정
  */
 const decision = async (req, res) => {
@@ -160,21 +169,16 @@ const decision = async (req, res) => {
     }
 
     try {
-        await Lunch.deleteOne({
-            lunch_date: getCurrentDate()
-        });
+        await removeLunch();
 
         // 방문수 업데이트
-        const result = await Restaurant.updateOne(
-            {
-                _id: no
-            },
-            {
-                $inc: {
-                    visitCount: 1
-                }
+        const result = await Restaurant.updateOne({
+            _id: no
+        }, {
+            $inc: {
+                visitCount: 1
             }
-        );
+        });
 
         if (!result) {
             return res.status(404).json({
@@ -314,29 +318,29 @@ const sendSlack = async (req, res) => {
                     "url": "http://lunch.mocadev.me/api/v2/lunch/slack",
                     "style": "danger"
                 }]
-            //     "type": "actions",
-            //     "elements": [
-            //         {
-            //             "type": "button",
-            //             "text": {
-            //                 "type": "plain_text",
-            //                 "emoji": true,
-            //                 "text": "Approve"
-            //             },
-            //             "style": "primary",
-            //             "value": "click_me_123"
-            //         },
-            //         {
-            //             "type": "button",
-            //             "text": {
-            //                 "type": "plain_text",
-            //                 "emoji": true,
-            //                 "text": "Deny"
-            //             },
-            //             "style": "danger",
-            //             "value": "click_me_123"
-            //         }
-            //     ]
+                //     "type": "actions",
+                //     "elements": [
+                //         {
+                //             "type": "button",
+                //             "text": {
+                //                 "type": "plain_text",
+                //                 "emoji": true,
+                //                 "text": "Approve"
+                //             },
+                //             "style": "primary",
+                //             "value": "click_me_123"
+                //         },
+                //         {
+                //             "type": "button",
+                //             "text": {
+                //                 "type": "plain_text",
+                //                 "emoji": true,
+                //                 "text": "Deny"
+                //             },
+                //             "style": "danger",
+                //             "value": "click_me_123"
+                //         }
+                //     ]
             }]
 
         }, (err, resultRes) => {
@@ -353,21 +357,48 @@ const sendSlack = async (req, res) => {
         });
     }
 };
+
 /**
  * 식당 선택 후 슬랙으로 메시지 보내기
  */
 const choiceSlack = async (req, res) => {
+    const no = req.body.no;
+
     try {
-        const restaurantNo = req.params.no;
+        await removeLunch();
 
-        console.log('restaurantNo: ', restaurantNo);
+        // 방문수 업데이트
+        const result = await Restaurant.updateOne({
+            _id: no
+        }, {
+            $inc: {
+                visitCount: 1
+            }
+        });
 
-        return res.status(201).end(restaurantNo);
+        if (!result) {
+            return res.status(404).json({
+                message: "선택할 식당이 없습니다."
+            });
+        }
+
+        // 결정된 식당 조회
+        const restaurant = await Restaurant.findOne({
+            _id: no
+        });
+
+        const newLunch = new Lunch({
+            lunch_date: getCurrentDate(),
+            restaurant_name: restaurant.name
+        });
+
+        // 오늘의 식당 입력
+        await newLunch.save();
+
+        return res.render("index");
     } catch (err) {
         console.error("error ==> ", err.message);
-        return res.status(500).json({
-            message: "식당 선택중 에러가 발생했습니다."
-        });
+        return res.render("index");
     }
 };
 
