@@ -9,7 +9,7 @@ router.post("/", ctrl.create);
 router.delete("/restaurant", ctrl.removeRestaurant);
 router.post("/choice", ctrl.choice);
 router.post("/decision", ctrl.decision);
-router.get("/slack/no", ctrl.choiceSlack);
+router.get("/slack/:no", ctrl.choiceSlack);
 router.get("/slack", ctrl.sendSlack);
 
 module.exports = router;

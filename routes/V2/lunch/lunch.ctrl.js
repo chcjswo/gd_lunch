@@ -157,6 +157,20 @@ const removeLunch = () => {
 };
 
 /**
+ * 방문수 업데이트
+ * @param no 고유번호
+ */
+const updateVisitCount = (no) => {
+    return Restaurant.updateOne({
+        _id: no
+    }, {
+        $inc: {
+            visitCount: 1
+        }
+    });
+};
+
+/**
  * 식당 결정
  */
 const decision = async (req, res) => {
@@ -172,13 +186,13 @@ const decision = async (req, res) => {
         await removeLunch();
 
         // 방문수 업데이트
-        const result = await Restaurant.updateOne({
-            _id: no
-        }, {
-            $inc: {
-                visitCount: 1
-            }
-        });
+        const result = await updateVisitCount(no);
+
+        if (!result) {
+            return res.status(404).json({
+                message: "선택할 식당이 없습니다."
+            });
+        }
 
         if (!result) {
             return res.status(404).json({
@@ -310,7 +324,8 @@ const sendSlack = async (req, res) => {
                 "actions": [{
                     "type": "button",
                     "text": "점심 선택",
-                    "url": `http://lunch.mocadev.me/api/v2/lunch/slack/${restaurantData._id}`,
+                    // "url": `http://lunch.mocadev.me/api/v2/lunch/slack/${restaurantData._id}`,
+                    "url": `http://localhost:3000/api/v2/lunch/slack/${restaurantData._id}`,
                     "style": "primary",
                 }, {
                     "type": "button",
@@ -362,25 +377,14 @@ const sendSlack = async (req, res) => {
  * 식당 선택 후 슬랙으로 메시지 보내기
  */
 const choiceSlack = async (req, res) => {
-    const no = req.body.no;
+    const no = req.params.no;
 
     try {
+        //  점심 삭제
         await removeLunch();
 
         // 방문수 업데이트
-        const result = await Restaurant.updateOne({
-            _id: no
-        }, {
-            $inc: {
-                visitCount: 1
-            }
-        });
-
-        if (!result) {
-            return res.status(404).json({
-                message: "선택할 식당이 없습니다."
-            });
-        }
+        await updateVisitCount(no);
 
         // 결정된 식당 조회
         const restaurant = await Restaurant.findOne({
