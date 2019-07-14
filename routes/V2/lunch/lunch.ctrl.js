@@ -249,75 +249,13 @@ const sendSlack = async (req, res) => {
         // });
 
         const slack = new Slack();
-        slack.setWebhook(process.env.MOCADEV_SLACK_URL);
+        // slack.setWebhook(process.env.MOCADEV_SLACK_URL);
+        slack.setWebhook(process.env.DEV2_SLACK_URL);
 
         slack.webhook({
-            // username: '점심 뭐 먹지??',
-            // text: `${getCurrentDate()} 오늘의 점심은 ${restaurantData.name} 어떠세요?`,
             username: '점심 뭐 먹지??',
             icon_emoji: ':rice:',
-            "mrkdwn": true,
-            // "attachments": [
-            //     {
-            //         "fallback": "Required plain-text summary of the attachment.",
-            //         "color": "#2eb886",
-            //         "pretext": "Optional text that appears above the attachment block",
-            //         "author_name": "Bobby Tables",
-            //         "author_link": "http://flickr.com/bobby/",
-            //         "author_icon": "http://flickr.com/icons/bobby.jpg",
-            //         "title": "Slack API Documentation",
-            //         "title_link": "https://api.slack.com/",
-            //         "text": "Optional text that appears within the attachment",
-            //         "fields": [
-            //             {
-            //                 "title": "Priority",
-            //                 "value": "High",
-            //                 "short": false
-            //             }
-            //         ],
-            //         "image_url": "http://my-website.com/path/to/image.jpg",
-            //         "thumb_url": "http://example.com/path/to/thumb.png",
-            //         "footer": "Slack API",
-            //         "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            //         "ts": 123456789
-            //     }
-            // ]
-            // "attachments": [
-            //     {
-            //         "text": "Choose a game to play",
-            //         "fallback": "You are unable to choose a game",
-            //         "callback_id": "wopr_game",
-            //         "color": "#3AA3E3",
-            //         "attachment_type": "default",
-            //         "actions": [
-            //             {
-            //                 "name": "game",
-            //                 "text": "Chess",
-            //                 "type": "button",
-            //                 "value": "chess"
-            //             },
-            //             {
-            //                 "name": "game",
-            //                 "text": "Falken's Maze",
-            //                 "type": "button",
-            //                 "value": "maze"
-            //             },
-            //             {
-            //                 "name": "game",
-            //                 "text": "Thermonuclear War",
-            //                 "style": "danger",
-            //                 "type": "button",
-            //                 "value": "war",
-            //                 "confirm": {
-            //                     "title": "Are you sure?",
-            //                     "text": "Wouldn't you prefer a good game of chess?",
-            //                     "ok_text": "Yes",
-            //                     "dismiss_text": "No"
-            //                 }
-            //             }
-            //         ]
-            //     }
-            // ]
+            mrkdwn: true,
             "attachments": [{
                 "text": `${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
                 "fallback": "Book your flights at https://flights.example.com/book/r123456",
@@ -333,30 +271,45 @@ const sendSlack = async (req, res) => {
                     "url": "http://lunch.mocadev.me/api/v2/lunch/slack",
                     "style": "danger"
                 }]
-                //     "type": "actions",
-                //     "elements": [
-                //         {
-                //             "type": "button",
-                //             "text": {
-                //                 "type": "plain_text",
-                //                 "emoji": true,
-                //                 "text": "Approve"
-                //             },
-                //             "style": "primary",
-                //             "value": "click_me_123"
-                //         },
-                //         {
-                //             "type": "button",
-                //             "text": {
-                //                 "type": "plain_text",
-                //                 "emoji": true,
-                //                 "text": "Deny"
-                //             },
-                //             "style": "danger",
-                //             "value": "click_me_123"
-                //         }
-                //     ]
             }]
+
+            // "attachments": [
+            //     {
+            //         "fallback": "Plan a vacation",
+            //         "author_name": "Owner: rdesoto",
+            //         "title": "Plan a vacation",
+            //         "text": "I've been working too hard, it's time for a break.",
+            //         "actions": [
+            //             {
+            //                 "name": "action",
+            //                 "type": "button",
+            //                 "text": "Complete this task",
+            //                 "style": "",
+            //                 "value": "complete"
+            //             },
+            //             {
+            //                 "name": "tags_list",
+            //                 "type": "select",
+            //                 "text": "Add a tag...",
+            //                 "data_source": "static",
+            //                 "options": [
+            //                     {
+            //                         "text": "Launch Blocking",
+            //                         "value": "launch-blocking"
+            //                     },
+            //                     {
+            //                         "text": "Enhancement",
+            //                         "value": "enhancement"
+            //                     },
+            //                     {
+            //                         "text": "Bug",
+            //                         "value": "bug"
+            //                     }
+            //                 ]
+            //             }
+            //         ]
+            //     }
+            // ]
 
         }, (err, resultRes) => {
             if (err) {
@@ -406,6 +359,11 @@ const choiceSlack = async (req, res) => {
     }
 };
 
+const checkSlack = (req, res) => {
+    console.log(req);
+   return res.end();
+};
+
 module.exports = {
     list,
     create,
@@ -413,5 +371,6 @@ module.exports = {
     choice,
     decision,
     sendSlack,
-    choiceSlack
+    choiceSlack,
+    checkSlack
 };
