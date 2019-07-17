@@ -249,8 +249,14 @@ const sendSlack = async (req, res) => {
         // });
 
         const slack = new Slack();
-        // slack.setWebhook(process.env.MOCADEV_SLACK_URL);
         slack.setWebhook(process.env.DEV2_SLACK_URL);
+
+        let apiUrl = 'http://localhost:3000/api/v2/lunch/slack/';
+
+        if (process.env.NODE_ENV === 'production') {
+            apiUrl = 'http://lunch.mocadev.me/api/v2/lunch/slack/';
+            slack.setWebhook(process.env.MOCADEV_SLACK_URL);
+        }
 
         slack.webhook({
             username: '점심 뭐 먹지??',
@@ -262,8 +268,7 @@ const sendSlack = async (req, res) => {
                 "actions": [{
                     "type": "button",
                     "text": "점심 선택",
-                    // "url": `http://lunch.mocadev.me/api/v2/lunch/slack/${restaurantData._id}`,
-                    "url": `http://localhost:3000/api/v2/lunch/slack/${restaurantData._id}`,
+                    "url": `http://${apiUrl}/api/v2/lunch/slack/${restaurantData._id}`,
                     "style": "primary",
                 }, {
                     "type": "button",
