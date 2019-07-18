@@ -1,7 +1,7 @@
-const Slack = require('slack-node');
-
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
+
+const util = require('../../../common/util');
 
 const randomRestaurant = async () => {
     const restaurantList = await Restaurant.find();
@@ -213,7 +213,16 @@ const decision = async (req, res) => {
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
-        return res.status(201).json({result: resultRestaurant});
+
+        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
+            return res.status(201).json({result: resultRestaurant});
+        });
+
+        // return res.status(201).json({result: resultRestaurant});
     } catch (err) {
         console.error("error ==> ", err);
         return res.status(500).json({
@@ -235,88 +244,7 @@ const sendSlack = async (req, res) => {
             });
         }
 
-        // const options = {
-        //     method: 'POST',
-        //     headers: {
-        //         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36',
-        //         'Content-type': 'application/json'
-        //     },
-        //     json: data
-        // };
-        //
-        // request(process.env.DEV2_SLACK_URL, options, () => {
-        //     return res.status(201).end();
-        // });
-
-        const slack = new Slack();
-        slack.setWebhook(process.env.DEV2_SLACK_URL);
-
-        let apiUrl = 'http://localhost:3000/api/v2/lunch/slack/';
-
-        if (process.env.NODE_ENV === 'production') {
-            apiUrl = 'http://lunch.mocadev.me/api/v2/lunch/slack/';
-            slack.setWebhook(process.env.MOCADEV_SLACK_URL);
-        }
-
-        slack.webhook({
-            username: '점심 뭐 먹지??',
-            icon_emoji: ':rice:',
-            mrkdwn: true,
-            "attachments": [{
-                "text": `${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
-                "fallback": "Book your flights at https://flights.example.com/book/r123456",
-                "actions": [{
-                    "type": "button",
-                    "text": "점심 선택",
-                    "url": `http://${apiUrl}/api/v2/lunch/slack/${restaurantData._id}`,
-                    "style": "primary",
-                }, {
-                    "type": "button",
-                    "text": "다시 선택",
-                    "url": "http://lunch.mocadev.me/api/v2/lunch/slack",
-                    "style": "danger"
-                }]
-            }]
-
-            // "attachments": [
-            //     {
-            //         "fallback": "Plan a vacation",
-            //         "author_name": "Owner: rdesoto",
-            //         "title": "Plan a vacation",
-            //         "text": "I've been working too hard, it's time for a break.",
-            //         "actions": [
-            //             {
-            //                 "name": "action",
-            //                 "type": "button",
-            //                 "text": "Complete this task",
-            //                 "style": "",
-            //                 "value": "complete"
-            //             },
-            //             {
-            //                 "name": "tags_list",
-            //                 "type": "select",
-            //                 "text": "Add a tag...",
-            //                 "data_source": "static",
-            //                 "options": [
-            //                     {
-            //                         "text": "Launch Blocking",
-            //                         "value": "launch-blocking"
-            //                     },
-            //                     {
-            //                         "text": "Enhancement",
-            //                         "value": "enhancement"
-            //                     },
-            //                     {
-            //                         "text": "Bug",
-            //                         "value": "bug"
-            //                     }
-            //                 ]
-            //             }
-            //         ]
-            //     }
-            // ]
-
-        }, (err, resultRes) => {
+        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`, 1, restaurantData._id, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
                 return res.status(500).end(err);
@@ -366,7 +294,7 @@ const choiceSlack = async (req, res) => {
 
 const checkSlack = (req, res) => {
     console.log(req);
-   return res.end();
+    return res.end();
 };
 
 module.exports = {

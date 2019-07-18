@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node app.js",
         "lint": "lint",
-        "test": "echo \"Error: no test specified\""
+        "test": "echo \"Error: no test specified\"",
+        "heroku-postbuild": "npm run build"
     },
     "dependencies": {
         "body-parser": "^1.18.3",
