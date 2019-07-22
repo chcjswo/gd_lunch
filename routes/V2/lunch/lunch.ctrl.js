@@ -213,7 +213,6 @@ const decision = async (req, res) => {
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
-
         util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);

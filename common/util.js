@@ -27,7 +27,7 @@ const sendSlack = (message, type, id, cb) => {
             }, {
                 type: "button",
                 text: "다시 선택",
-                url: `http://${apiUrl}/api/v2/lunch/slack`,
+                url: `${apiUrl}/api/v2/lunch/slack`,
                 style: "danger"
             }]
         }]
@@ -83,7 +83,6 @@ const sendSlack = (message, type, id, cb) => {
 
     slack.webhook(json, cb);
 };
-
 
 module.exports = {
     sendSlack
