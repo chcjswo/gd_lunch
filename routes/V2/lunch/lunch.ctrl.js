@@ -283,8 +283,14 @@ const choiceSlack = async (req, res) => {
 
         // 오늘의 식당 입력
         await newLunch.save();
-
-        return res.render("index");
+        
+        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
+            return res.render("index");
+        });
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.render("index");
