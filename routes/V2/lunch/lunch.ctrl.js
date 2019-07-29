@@ -73,12 +73,20 @@ const create = async (req, res) => {
     }
 
     try {
+        const restaurantName = req.body.name;
         const newRestaurant = new Restaurant({
-            name: req.body.name
+            name: restaurantName
         });
         const data = await newRestaurant.save();
 
-        return res.status(201).json([data]);
+        util.sendSlack(`*${restaurantName}*을 추가 하셨습니다.`, 2, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
+            return res.status(201).json([data]);
+        });
+
     } catch (err) {
         console.error("error ===> ", err);
         return res.status(500).json({
@@ -283,7 +291,7 @@ const choiceSlack = async (req, res) => {
 
         // 오늘의 식당 입력
         await newLunch.save();
-        
+
         util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
