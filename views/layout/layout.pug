@@ -1,6 +1,7 @@
 doctype html
 html(lang='ko')
     head
+        include ../partials/analytics
         meta(http-equiv='content-type', content='text/html;charset=UTF-8')
         meta(charset='utf-8')
         meta(name="keywords" content="점심,구로디지털단지,구디단,맛집")
@@ -20,7 +21,6 @@ html(lang='ko')
         link(rel="apple-touch-icon" href="/images/lunch.jpg")
         include ../partials/stylesheets
         block style
-        include ../partials/analytics
     body
         .loading(style="display: none")
         block content
