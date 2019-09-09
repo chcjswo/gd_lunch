@@ -61,19 +61,18 @@ const list = async (req, res) => {
         const titleArray = [];
         restaurantList.forEach(item => {
             titleArray.push({
-                "title": item.name
+                "title": "식당",
+                "value": item.name,
+                short: false
             });
         });
 
-        const resData = {
+        return res.json({
+            text: "test",
             "attachments": [{
                 "fields": titleArray,
                 "color": "#F35A00"
             }]
-        };
-
-        return res.json({
-            resData
         });
     } catch (err) {
         console.error("error ===> ", err);
