@@ -9,7 +9,7 @@ const randomRestaurant = async () => {
     const restaurantData = restaurantList[index];
 
     await Lunch.deleteOne({
-        lunch_date: getCurrentDate()
+        lunch_date: util.getCurrentDate()
     });
 
     // 선택 카운트 업데이트
@@ -26,17 +26,6 @@ const randomRestaurant = async () => {
     return restaurantData;
 };
 
-const getCurrentDate = () => {
-    const d = new Date();
-
-    return `${d.getFullYear()}-${(d.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${d
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`;
-};
-
 /**
  * 식당 리스트
  */
@@ -47,7 +36,7 @@ const list = async (req, res) => {
             choiceCount: -1
         });
         const lunchRestaurant = await Lunch.findOne({
-            lunch_date: getCurrentDate()
+            lunch_date: util.getCurrentDate()
         });
 
         return res.json({
@@ -160,7 +149,7 @@ const choice = async (req, res) => {
  */
 const removeLunch = () => {
     Lunch.deleteOne({
-        lunch_date: getCurrentDate()
+        lunch_date: util.getCurrentDate()
     });
 };
 
@@ -214,14 +203,14 @@ const decision = async (req, res) => {
         });
 
         const newLunch = new Lunch({
-            lunch_date: getCurrentDate(),
+            lunch_date: util.getCurrentDate(),
             restaurant_name: restaurant.name
         });
 
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
-        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
                 return res.status(500).end(err);
@@ -251,7 +240,7 @@ const sendSlack = async (req, res) => {
             });
         }
 
-        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`, 1, restaurantData._id, (err) => {
+        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`, 1, restaurantData._id, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
                 return res.status(500).end(err);
@@ -285,14 +274,14 @@ const choiceSlack = async (req, res) => {
         });
 
         const newLunch = new Lunch({
-            lunch_date: getCurrentDate(),
+            lunch_date: util.getCurrentDate(),
             restaurant_name: restaurant.name
         });
 
         // 오늘의 식당 입력
         await newLunch.save();
 
-        util.sendSlack(`${getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
                 return res.status(500).end(err);

@@ -1,6 +1,9 @@
 const Slack = require('slack-node');
 const env = process.env.NODE_ENV || 'development';
 
+const Restaurant = require("../../../models/mongo/Restaurant");
+const Lunch = require("../../../models/mongo/Lunch");
+
 const sendSlack = (message, type, id, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
     let apiUrl = 'http://localhost:3000';
@@ -45,18 +48,41 @@ const sendSlack = (message, type, id, cb) => {
     slack.webhook(json, cb);
 };
 
-const getCurrentDate = () => {
-    const d = new Date();
+/**
+ * 식당 리스트
+ */
+const list = async (req, res) => {
+    try {
+        const restaurantList = await Restaurant.find().sort({
+            visitCount: -1,
+            choiceCount: -1
+        });
 
-    return `${d.getFullYear()}-${(d.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${d
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`;
+        const titleArray = [];
+        restaurantList.forEach(item => {
+            titleArray.push({
+                "title": item.name
+            });
+        });
+
+        const resData = {
+            "attachments": [{
+                "fields": titleArray,
+                "color": "#F35A00"
+            }]
+        };
+
+        return res.json({
+            resData
+        });
+    } catch (err) {
+        console.error("error ===> ", err);
+        return res.status(500).json({
+            message: "식당 조회중 에러가 발생했습니다."
+        });
+    }
 };
 
 module.exports = {
-    sendSlack,
-    getCurrentDate
+    list
 };
