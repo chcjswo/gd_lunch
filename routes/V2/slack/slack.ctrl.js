@@ -58,19 +58,20 @@ const list = async (req, res) => {
             choiceCount: -1
         });
 
-        const titleArray = [];
+        const restaurantData = [];
+
         restaurantList.forEach(item => {
-            titleArray.push({
-                "title": "식당",
-                "value": item.name,
+            restaurantData.push({
+                "title": item.name,
+                "value": `${item.choiceCount}번 선택 ${item.visitCount}번 방문`,
                 short: false
             });
         });
 
         return res.json({
-            text: "test",
+            text: "선택 가능한 식당",
             "attachments": [{
-                "fields": titleArray,
+                "fields": restaurantData,
                 "color": "#F35A00"
             }]
         });
