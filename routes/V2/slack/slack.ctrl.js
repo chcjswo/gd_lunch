@@ -4,48 +4,17 @@ const env = process.env.NODE_ENV || 'development';
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
 
-const sendSlack = (message, type, id, cb) => {
+const sendSlack = (message, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
-    let apiUrl = 'http://localhost:3000';
 
     if (env !== 'development') {
         slackUrl = process.env.DEV2_SLACK_URL;
-        apiUrl = 'http://lunch.mocadev.me';
     }
 
     const slack = new Slack();
-    slack.setWebhook(slackUrl);
+    slack.setWebhook("https://hooks.slack.com/services/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");
 
-    let json = {
-        username: '점심 뭐 먹지??',
-        icon_emoji: ':rice:',
-        mrkdwn: true,
-        attachments: [{
-            text: message,
-            actions: [{
-                type: "button",
-                text: "점심 선택",
-                url: `${apiUrl}/api/v2/lunch/slack/${id}`,
-                style: "primary",
-            }, {
-                type: "button",
-                text: "다시 선택",
-                url: `${apiUrl}/api/v2/lunch/slack`,
-                style: "danger"
-            }]
-        }]
-    };
-
-    if (type === 2) {
-        json = {
-            username: '점심 뭐 먹지??',
-            icon_emoji: ':rice:',
-            mrkdwn: true,
-            text: message
-        };
-    }
-
-    slack.webhook(json, cb);
+    slack.webhook(message, cb);
 };
 
 /**
@@ -83,6 +52,61 @@ const list = async (req, res) => {
     }
 };
 
+const test = async (req, res) => {
+    const data = {
+        "text": "Would you like to play a game?",
+        "attachments": [
+            {
+                "text": "Choose a game to play",
+                "fallback": "You are unable to choose a game",
+                "callback_id": "wopr_game",
+                "color": "#3AA3E3",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "game",
+                        "text": "Chess",
+                        "type": "button",
+                        "value": "chess"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Falken's Maze",
+                        "type": "button",
+                        "value": "maze"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Thermonuclear War",
+                        "style": "danger",
+                        "type": "button",
+                        "value": "war",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "Wouldn't you prefer a good game of chess?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+    sendSlack(data, (err) => {
+        if (err) {
+            console.error('에러 발생 ===> ', err);
+            return res.status(500).end(err);
+        }
+        return res.status(201).json(data);
+    });
+};
+
+const choice = async(req, res) => {
+    return res.json("choice");
+};
+
 module.exports = {
-    list
+    list,
+    test,
+    choice
 };
