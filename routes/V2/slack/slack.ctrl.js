@@ -41,7 +41,7 @@ const sendSlack = (message, cb) => {
     }
 
     const slack = new Slack();
-    slack.setWebhook(process.env.DEV2_SLACK_URL);
+    slack.setWebhook(process.env.MOCADEV_SLACK_URL);
 
     slack.webhook(message, cb);
 };
