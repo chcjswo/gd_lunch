@@ -1,9 +1,32 @@
 const Slack = require('slack-node');
 const env = process.env.NODE_ENV || 'development';
 
+const util = require('../../../common/util');
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
-const lunch = require('../lunch');
+
+const randomRestaurant = async () => {
+    const restaurantList = await Restaurant.find();
+    const index = Math.floor(Math.random() * restaurantList.length);
+    const restaurantData = restaurantList[index];
+
+    await Lunch.deleteOne({
+        lunch_date: util.getCurrentDate()
+    });
+
+    // 선택 카운트 업데이트
+    restaurantData.choiceCount++;
+
+    await Restaurant.updateOne({
+        _id: restaurantData._id
+    }, {
+        $inc: {
+            choiceCount: 1
+        }
+    });
+
+    return restaurantData;
+};
 
 const sendSlack = (message, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
@@ -55,7 +78,7 @@ const list = async (req, res) => {
 
 const choice = async (req, res) => {
 
-    const restaurantData = await lunch.randomRestaurant();
+    const restaurantData = await randomRestaurant();
 
     if (!restaurantData) {
         return res.status(404).json({
@@ -69,35 +92,29 @@ const choice = async (req, res) => {
         mrkdwn: true,
         "attachments": [
             {
-                "text": "오늘의 점심을 선택해주세요",
-                "fallback": "You are unable to choose a game",
-                "callback_id": "wopr_game",
+                "text": `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
+                "fallback": "You are unable to choose a lunch",
+                "callback_id": "lunch",
                 "color": "#3AA3E3",
                 "attachment_type": "default",
                 "actions": [
                     {
-                        "name": "game",
-                        "text": "Chess",
+                        "name": "lunch",
+                        "text": "점심선택",
                         "type": "button",
-                        "value": "chess"
+                        "value": restaurantData._id
                     },
                     {
-                        "name": "game",
-                        "text": "Falken's Maze",
-                        "type": "button",
-                        "value": "maze"
-                    },
-                    {
-                        "name": "game",
-                        "text": "Thermonuclear War",
+                        "name": "lunch",
+                        "text": "다시 선택",
                         "style": "danger",
                         "type": "button",
-                        "value": "war",
+                        "value": "resend",
                         "confirm": {
-                            "title": "Are you sure?",
-                            "text": "Wouldn't you prefer a good game of chess?",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
+                            "title": "점심 다시 선택",
+                            "text": `*${restaurantData.name}* 말고 다시 선택 하시겠습니까?`,
+                            "ok_text": "다시해",
+                            "dismiss_text": "아니"
                         }
                     }
                 ]
@@ -116,7 +133,7 @@ const choice = async (req, res) => {
 
 const decision = async(req, res) => {
     const payload = req.body.payload;
-    console.log(payload.actions.value);
+    console.log(payload.actions[0].value);
     console.log(payload.user.name);
     return res.json({payload});
 };
