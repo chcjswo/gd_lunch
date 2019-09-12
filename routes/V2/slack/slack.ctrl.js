@@ -54,10 +54,12 @@ const list = async (req, res) => {
 
 const test = async (req, res) => {
     const data = {
-        "text": "Would you like to play a game?",
+        username: '점심 뭐 먹지??',
+        icon_emoji: ':rice:',
+        mrkdwn: true,
         "attachments": [
             {
-                "text": "Choose a game to play",
+                "text": "오늘의 점심을 선택해주세요",
                 "fallback": "You are unable to choose a game",
                 "callback_id": "wopr_game",
                 "color": "#3AA3E3",
@@ -102,7 +104,9 @@ const test = async (req, res) => {
 };
 
 const choice = async(req, res) => {
-    return res.json("choice");
+    const payload = req.body.payload;
+    console.log(payload);
+    return res.json({payload});
 };
 
 module.exports = {
