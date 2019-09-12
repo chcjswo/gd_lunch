@@ -138,14 +138,16 @@ const makeRestaurantSlackMessage = async (userName) => {
     };
 };
 
-const choiceSend = (res, data) => {
+const choiceSend = (res, data, responseUrl = null) => {
     sendSlack(data, (err) => {
         if (err) {
             console.error('에러 발생 ===> ', err);
-            return res.status(500).end(err);
+            res.status(500).end(err);
         }
-        return res.status(200).end();
+        res.status(200).end();
     });
+    // res.status(200).end();
+
 };
 
 /**
@@ -194,15 +196,16 @@ const decision = async (req, res) => {
     const payload = JSON.parse(req.body.payload);
     const userName = payload.user.name;
     const value = payload.actions[0].value;
+    const responseUrl = payload.response_url;
 
-    console.log(payload.response_url);
+    console.log('responseUrl => ', responseUrl);
 
     // 재선택인 경우
     if (value === 'resend') {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
         const data = await makeRestaurantSlackMessage(userName);
 
-        return choiceSend(res, data);
+        return choiceSend(res, data, responseUrl);
     }
 
     //  점심 삭제
@@ -232,7 +235,7 @@ const decision = async (req, res) => {
         text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
-    return choiceSend(res, data);
+    return choiceSend(res, data, responseUrl);
 };
 
 module.exports = {
