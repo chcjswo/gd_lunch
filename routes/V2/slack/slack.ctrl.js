@@ -132,16 +132,13 @@ const makeRestaurantSlackMessage = async () => {
     };
 };
 
-const choiceSend = async (res) => {
-    // 랜덤 점심 선택 및 슬랙 메시지 만들기
-    const data = await makeRestaurantSlackMessage();
-
+const choiceSend = async (res, data) => {
     sendSlack(data, (err) => {
         if (err) {
             console.error('에러 발생 ===> ', err);
             return res.status(500).end(err);
         }
-        return res.status(201).json(data);
+        return res.end();
     });
 };
 
@@ -152,7 +149,33 @@ const choiceSend = async (res) => {
  * @returns {Promise<*>}
  */
 const choice = async (req, res) => {
-    return await choiceSend(res);
+    // 랜덤 점심 선택 및 슬랙 메시지 만들기
+    const data = await makeRestaurantSlackMessage();
+
+    return await choiceSend(res, data);
+};
+
+/**
+ * 점심 삭제
+ */
+const removeLunch = () => {
+    Lunch.deleteOne({
+        lunch_date: util.getCurrentDate()
+    });
+};
+
+/**
+ * 방문수 업데이트
+ * @param no 고유번호
+ */
+const updateVisitCount = (no) => {
+    return Restaurant.updateOne({
+        _id: no
+    }, {
+        $inc: {
+            visitCount: 1
+        }
+    });
 };
 
 /**
@@ -171,12 +194,34 @@ const decision = async (req, res) => {
         return await choiceSend(res);
     }
 
-    console.log(payload.user.name);
-    console.log(payload.actions[0].value);
+    //  점심 삭제
+    await removeLunch();
 
-    const result = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${value}* 입니다.`;
+    // 방문수 업데이트
+    await updateVisitCount(value);
 
-    return res.json(result);
+    // 결정된 식당 조회
+    const restaurant = await Restaurant.findOne({
+        _id: value
+    });
+
+    const newLunch = new Lunch({
+        lunch_date: util.getCurrentDate(),
+        restaurant_name: restaurant.name,
+        user_name: userName
+    });
+
+    // 오늘의 식당 입력
+    await newLunch.save();
+
+    const data = {
+        username: '점심 뭐 먹지??',
+        icon_emoji: ':rice:',
+        mrkdwn: true,
+        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${value}* 입니다.`
+    };
+
+    return await choiceSend(res, data);
 };
 
 module.exports = {
