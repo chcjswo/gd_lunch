@@ -111,10 +111,10 @@ const choice = async (req, res) => {
                         "type": "button",
                         "value": "resend",
                         "confirm": {
-                            "title": "점심 다시 선택",
+                            "title": "점심 다시 선택??",
                             "text": `*${restaurantData.name}* 말고 다시 선택 하시겠습니까?`,
-                            "ok_text": "다시해",
-                            "dismiss_text": "아니"
+                            "ok_text": "다시 선택",
+                            "dismiss_text": "그냥 먹을래"
                         }
                     }
                 ]
@@ -132,8 +132,8 @@ const choice = async (req, res) => {
 };
 
 const decision = async(req, res) => {
-    const payload = req.body.payload;
-    console.log(payload.user.name);
+    const payload = JSON.parse(req.body.payload);
+    console.log(payload.user);
     console.log(payload.actions);
     return res.json({payload});
 };
