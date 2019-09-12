@@ -154,11 +154,11 @@ const choiceSend = (res, data, responseUrl = null) => {
                     : process.env.DEV2_SLACK_URL;
 
     if (responseUrl === null) {
-        responseUrl = process.env.DEV2_SLACK_URL;
+        responseUrl = process.env.MOCADEV_SLACK_URL;
     }
 
     const postOptions = {
-        uri: responseUrl,
+        uri: process.env.MOCADEV_SLACK_URL,
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
