@@ -115,7 +115,7 @@ const makeRestaurantSlackMessage = async (userName) => {
                 actions: [
                     {
                         name: "lunch",
-                        text: "점심선택",
+                        text: "점심 선택",
                         type: "button",
                         value: restaurantData._id
                     },
