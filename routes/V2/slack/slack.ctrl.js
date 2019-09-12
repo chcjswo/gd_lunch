@@ -144,7 +144,7 @@ const choiceSend = async (res, data) => {
             console.error('에러 발생 ===> ', err);
             return res.status(500).end(err);
         }
-        return res.end();
+        return res.json('success');
     });
 };
 
