@@ -133,8 +133,8 @@ const choice = async (req, res) => {
 
 const decision = async(req, res) => {
     const payload = req.body.payload;
-    console.log(payload.actions[0].value);
     console.log(payload.user.name);
+    console.log(payload.actions);
     return res.json({payload});
 };
 
