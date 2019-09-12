@@ -307,5 +307,6 @@ module.exports = {
     decision,
     sendSlack,
     choiceSlack,
-    checkSlack
+    checkSlack,
+    randomRestaurant
 };

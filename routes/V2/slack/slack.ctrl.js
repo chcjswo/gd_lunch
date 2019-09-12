@@ -3,6 +3,7 @@ const env = process.env.NODE_ENV || 'development';
 
 const Restaurant = require("../../../models/mongo/Restaurant");
 const Lunch = require("../../../models/mongo/Lunch");
+const lunch = require('../lunch');
 
 const sendSlack = (message, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
@@ -52,7 +53,16 @@ const list = async (req, res) => {
     }
 };
 
-const test = async (req, res) => {
+const choice = async (req, res) => {
+
+    const restaurantData = await lunch.randomRestaurant();
+
+    if (!restaurantData) {
+        return res.status(404).json({
+            message: "선택할 식당이 없습니다."
+        });
+    }
+
     const data = {
         username: '점심 뭐 먹지??',
         icon_emoji: ':rice:',
@@ -94,6 +104,7 @@ const test = async (req, res) => {
             }
         ]
     };
+
     sendSlack(data, (err) => {
         if (err) {
             console.error('에러 발생 ===> ', err);
@@ -103,14 +114,15 @@ const test = async (req, res) => {
     });
 };
 
-const choice = async(req, res) => {
+const decision = async(req, res) => {
     const payload = req.body.payload;
-    console.log(payload);
+    console.log(payload.actions.value);
+    console.log(payload.user.name);
     return res.json({payload});
 };
 
 module.exports = {
     list,
-    test,
+    decision,
     choice
 };
