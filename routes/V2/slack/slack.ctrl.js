@@ -1,4 +1,5 @@
 const Slack = require('slack-node');
+const request = require('request');
 const env = process.env.NODE_ENV || 'development';
 
 const util = require('../../../common/util');
@@ -144,7 +145,7 @@ const choiceSend = (res, data, responseUrl = null) => {
             console.error('에러 발생 ===> ', err);
             res.status(500).end(err);
         }
-        res.status(200).end();
+        res.status(200).end('');
     });
     // res.status(200).end();
 
