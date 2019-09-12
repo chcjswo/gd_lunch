@@ -41,7 +41,7 @@ const sendSlack = (message, cb) => {
     }
 
     const slack = new Slack();
-    slack.setWebhook("https://hooks.slack.com/services/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");
+    slack.setWebhook(slackUrl);
 
     slack.webhook(message, cb);
 };
