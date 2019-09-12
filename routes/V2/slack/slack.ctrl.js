@@ -28,6 +28,11 @@ const randomRestaurant = async () => {
     return restaurantData;
 };
 
+/**
+ * 슬랙으로 메시지 보내기
+ * @param message 보낼 메시지 내용
+ * @param cb 콜백 함수
+ */
 const sendSlack = (message, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
 
@@ -42,7 +47,7 @@ const sendSlack = (message, cb) => {
 };
 
 /**
- * 식당 리스트
+ * slash command /lunch 식당 리스트
  */
 const list = async (req, res) => {
     try {
@@ -76,8 +81,12 @@ const list = async (req, res) => {
     }
 };
 
-const choice = async (req, res) => {
-
+/**
+ * 랜덤 식당 선택 후 슬랙 메시지 만들기
+ * @returns {Promise<*>}
+ */
+const makeRestaurantSlackMessage = async () => {
+    // 랜점 점심 선택
     const restaurantData = await randomRestaurant();
 
     if (!restaurantData) {
@@ -86,41 +95,46 @@ const choice = async (req, res) => {
         });
     }
 
-    const data = {
+    return {
         username: '점심 뭐 먹지??',
         icon_emoji: ':rice:',
         mrkdwn: true,
-        "attachments": [
+        attachments: [
             {
-                "text": `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
-                "fallback": "You are unable to choose a lunch",
-                "callback_id": "lunch",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
+                text: `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`,
+                fallback: "You are unable to choose a lunch",
+                callback_id: "lunch",
+                color: "#3AA3E3",
+                attachment_type: "default",
+                actions: [
                     {
-                        "name": "lunch",
-                        "text": "점심선택",
-                        "type": "button",
-                        "value": restaurantData._id
+                        name: "lunch",
+                        text: "점심선택",
+                        type: "button",
+                        value: restaurantData._id
                     },
                     {
-                        "name": "lunch",
-                        "text": "다시 선택",
-                        "style": "danger",
-                        "type": "button",
-                        "value": "resend",
-                        "confirm": {
-                            "title": "점심 다시 선택??",
-                            "text": `*${restaurantData.name}* 말고 다시 선택 하시겠습니까?`,
-                            "ok_text": "다시 선택",
-                            "dismiss_text": "그냥 먹을래"
+                        name: "lunch",
+                        text: "다시 선택",
+                        style: "danger",
+                        type: "button",
+                        value: "resend",
+                        confirm: {
+                            title: "점심 다시 선택??",
+                            text: `*${restaurantData.name}* 말고 다시 선택 하시겠습니까?`,
+                            ok_text: "다시 선택",
+                            dismiss_text: "그냥 먹을래"
                         }
                     }
                 ]
             }
         ]
     };
+};
+
+const choiceSend = async (res) => {
+    // 랜덤 점심 선택 및 슬랙 메시지 만들기
+    const data = await makeRestaurantSlackMessage();
 
     sendSlack(data, (err) => {
         if (err) {
@@ -131,11 +145,38 @@ const choice = async (req, res) => {
     });
 };
 
-const decision = async(req, res) => {
+/**
+ * 랜덤한게 점심 하나를 뽑아서 메시지 보내기
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+const choice = async (req, res) => {
+    return await choiceSend(res);
+};
+
+/**
+ * 점심 선택
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+const decision = async (req, res) => {
     const payload = JSON.parse(req.body.payload);
+    const userName = payload.user.name;
+    const value = payload.actions[0].value;
+
+    // 재선택인 경우
+    if (value === 'resend') {
+        return await choiceSend(res);
+    }
+
     console.log(payload.user.name);
     console.log(payload.actions[0].value);
-    return res.json({payload});
+
+    const result = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`;
+
+    return res.json(result);
 };
 
 module.exports = {

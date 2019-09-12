@@ -8,6 +8,9 @@ var lunchSchema = schema({
     },
     restaurant_name:{
         type: String
+    },
+    user_name:{
+        type: String
     }
 });
 
