@@ -41,7 +41,7 @@ const sendSlack = (message, cb) => {
     }
 
     const slack = new Slack();
-    slack.setWebhook(slackUrl);
+    slack.setWebhook(process.env.DEV2_SLACK_URL);
 
     slack.webhook(message, cb);
 };
@@ -194,6 +194,8 @@ const decision = async (req, res) => {
     const payload = JSON.parse(req.body.payload);
     const userName = payload.user.name;
     const value = payload.actions[0].value;
+
+    console.log(payload.response_url);
 
     // 재선택인 경우
     if (value === 'resend') {
