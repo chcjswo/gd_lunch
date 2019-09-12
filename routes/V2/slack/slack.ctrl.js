@@ -158,7 +158,7 @@ const choice = async (req, res) => {
     // 랜덤 점심 선택 및 슬랙 메시지 만들기
     const data = await makeRestaurantSlackMessage(null);
 
-    return await choiceSend(res, data);
+    return choiceSend(res, data);
 };
 
 /**
