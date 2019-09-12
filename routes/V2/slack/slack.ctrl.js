@@ -140,14 +140,36 @@ const makeRestaurantSlackMessage = async (userName) => {
 };
 
 const choiceSend = (res, data, responseUrl = null) => {
-    sendSlack(data, (err) => {
-        if (err) {
-            console.error('에러 발생 ===> ', err);
-            res.status(500).end(err);
+    // sendSlack(data, (err) => {
+    //     if (err) {
+    //         console.error('에러 발생 ===> ', err);
+    //         res.status(500).end(err);
+    //     }
+    //     res.status(200).end('');
+    // });
+    res.status(200).end();
+
+    const slackUrl = env !== 'development'
+                    ? process.env.MOCADEV_SLACK_URL
+                    : process.env.DEV2_SLACK_URL;
+
+    if (responseUrl === null) {
+        responseUrl = process.env.DEV2_SLACK_URL;
+    }
+
+    const postOptions = {
+        uri: responseUrl,
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        json: data
+    };
+    request(postOptions, (error, response, body) => {
+        if (error){
+            // handle errors as you see fit
         }
-        res.status(200).end('');
-    });
-    // res.status(200).end();
+    })
 
 };
 
