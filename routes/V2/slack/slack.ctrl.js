@@ -200,7 +200,7 @@ const decision = async (req, res) => {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
         const data = await makeRestaurantSlackMessage(userName);
 
-        return await choiceSend(res, data);
+        return choiceSend(res, data);
     }
 
     //  점심 삭제
@@ -230,7 +230,7 @@ const decision = async (req, res) => {
         text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
-    return await choiceSend(res, data);
+    return choiceSend(res, data);
 };
 
 module.exports = {
