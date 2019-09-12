@@ -145,7 +145,7 @@ const choiceSend = (res, data, responseUrl = null) => {
             console.error('에러 발생 ===> ', err);
             res.status(500).end(err);
         }
-        res.status(200).json('');
+        res.status(200).json();
     });
     // res.status(200).end();
     //
