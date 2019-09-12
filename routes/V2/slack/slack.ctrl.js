@@ -127,7 +127,7 @@ const makeRestaurantSlackMessage = async (userName) => {
                         value: "resend",
                         confirm: {
                             title: "점심 다시 선택??",
-                            text: `*${restaurantData.name}* 말고 다시 선택 하시겠습니까?`,
+                            text: `${restaurantData.name} 말고 다시 선택 하시겠습니까?`,
                             ok_text: "다시 선택",
                             dismiss_text: "그냥 먹을래"
                         }
@@ -144,7 +144,7 @@ const choiceSend = async (res, data) => {
             console.error('에러 발생 ===> ', err);
             return res.status(500).end(err);
         }
-        return res.json('success');
+        return res.status(200).end();
     });
 };
 
