@@ -174,7 +174,7 @@ const decision = async (req, res) => {
     console.log(payload.user.name);
     console.log(payload.actions[0].value);
 
-    const result = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`;
+    const result = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${value}* 입니다.`;
 
     return res.json(result);
 };
