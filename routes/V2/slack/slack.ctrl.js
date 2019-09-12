@@ -191,7 +191,10 @@ const decision = async (req, res) => {
 
     // 재선택인 경우
     if (value === 'resend') {
-        return await choiceSend(res);
+        // 랜덤 점심 선택 및 슬랙 메시지 만들기
+        const data = await makeRestaurantSlackMessage();
+
+        return await choiceSend(res, data);
     }
 
     //  점심 삭제
@@ -218,7 +221,7 @@ const decision = async (req, res) => {
         username: '점심 뭐 먹지??',
         icon_emoji: ':rice:',
         mrkdwn: true,
-        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${value}* 입니다.`
+        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
     return await choiceSend(res, data);
