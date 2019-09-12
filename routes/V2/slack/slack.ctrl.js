@@ -140,36 +140,36 @@ const makeRestaurantSlackMessage = async (userName) => {
 };
 
 const choiceSend = (res, data, responseUrl = null) => {
-    // sendSlack(data, (err) => {
-    //     if (err) {
-    //         console.error('에러 발생 ===> ', err);
-    //         res.status(500).end(err);
-    //     }
-    //     res.status(200).end('');
-    // });
-    res.status(200).end();
-
-    const slackUrl = env !== 'development'
-                    ? process.env.MOCADEV_SLACK_URL
-                    : process.env.DEV2_SLACK_URL;
-
-    if (responseUrl === null) {
-        responseUrl = process.env.MOCADEV_SLACK_URL;
-    }
-
-    const postOptions = {
-        uri: process.env.MOCADEV_SLACK_URL,
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        json: data
-    };
-    request(postOptions, (error, response, body) => {
-        if (error){
-            // handle errors as you see fit
+    sendSlack(data, (err) => {
+        if (err) {
+            console.error('에러 발생 ===> ', err);
+            res.status(500).end(err);
         }
-    })
+        res.status(200).json('');
+    });
+    // res.status(200).end();
+    //
+    // const slackUrl = env !== 'development'
+    //                 ? process.env.MOCADEV_SLACK_URL
+    //                 : process.env.DEV2_SLACK_URL;
+    //
+    // if (responseUrl === null) {
+    //     responseUrl = process.env.MOCADEV_SLACK_URL;
+    // }
+    //
+    // const postOptions = {
+    //     uri: process.env.MOCADEV_SLACK_URL,
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     },
+    //     json: data
+    // };
+    // request(postOptions, (error, response, body) => {
+    //     if (error){
+    //         // handle errors as you see fit
+    //     }
+    // });
 
 };
 
@@ -252,9 +252,6 @@ const decision = async (req, res) => {
     await newLunch.save();
 
     const data = {
-        username: '점심 뭐 먹지??',
-        icon_emoji: ':rice:',
-        mrkdwn: true,
         text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
