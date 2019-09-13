@@ -272,7 +272,47 @@ const decision = async (req, res) => {
     //     text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     // };
 
-    const data = {value};
+    console.log('value ==> ', value);
+
+    const data = {
+        "text": "Would you like to play a game?",
+        "attachments": [
+            {
+                "text": "Choose a game to play",
+                "fallback": "You are unable to choose a game",
+                "callback_id": "wopr_game",
+                "color": "#3AA3E3",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "game",
+                        "text": "Chess",
+                        "type": "button",
+                        "value": "chess"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Falken's Maze",
+                        "type": "button",
+                        "value": "maze"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Thermonuclear War",
+                        "style": "danger",
+                        "type": "button",
+                        "value": "war",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "Wouldn't you prefer a good game of chess?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                ]
+            }
+        ]
+    };
 
     choiceSend(res, data, responseUrl);
 };
