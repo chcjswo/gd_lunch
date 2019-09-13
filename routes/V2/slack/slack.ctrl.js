@@ -139,7 +139,7 @@ const makeRestaurantSlackMessage = async (userName) => {
     };
 };
 
-const choiceSend = (res, data, responseUrl = null) => {
+const choiceSend = (res, payload, responseUrl = null) => {
     // sendSlack(data, (err) => {
     //     if (err) {
     //         console.error('에러 발생 ===> ', err);
@@ -151,25 +151,39 @@ const choiceSend = (res, data, responseUrl = null) => {
     res.status(200).end();
 
     const slackUrl = env !== 'development'
-                    ? process.env.MOCADEV_SLACK_URL
-                    : process.env.DEV2_SLACK_URL;
+        ? process.env.MOCADEV_SLACK_URL
+        : process.env.DEV2_SLACK_URL;
 
     if (responseUrl === null) {
         responseUrl = process.env.MOCADEV_SLACK_URL;
     }
 
-    const postOptions = {
-        uri: process.env.MOCADEV_SLACK_URL,
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        json: data
-    };
-    request(postOptions, (error, response, body) => {
-        console.log('body ==> ', body);
-        if (error){
-            // handle errors as you see fit
+    // const postOptions = {
+    //     uri: process.env.MOCADEV_SLACK_URL,
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     },
+    //     json: data
+    // };
+    // request(postOptions, (error, response, body) => {
+    //     console.log('body ==> ', body);
+    //     if (error){
+    //         // handle errors as you see fit
+    //     }
+    // });
+
+    const headers = {"Content-type": "application/json"};
+    request.post({
+        url: process.env.MOCADEV_SLACK_URL,
+        payload: payload,
+        headers: headers
+    }, function (err, res) {
+        if (err) {
+            console.log(err);
+        }
+        if (res) {
+            console.log('body ==> ', res.body);
         }
     });
 };
