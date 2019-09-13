@@ -230,34 +230,38 @@ const decision = async (req, res) => {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
         const data = await makeRestaurantSlackMessage(userName);
 
-        return choiceSend(res, data, responseUrl);
+        choiceSend(res, data, responseUrl);
+
+        return;
     }
 
-    //  점심 삭제
-    await removeLunch();
+    // //  점심 삭제
+    // await removeLunch();
+    //
+    // // 방문수 업데이트
+    // await updateVisitCount(value);
+    //
+    // // 결정된 식당 조회
+    // const restaurant = await Restaurant.findOne({
+    //     _id: value
+    // });
+    //
+    // const newLunch = new Lunch({
+    //     lunch_date: util.getCurrentDate(),
+    //     restaurant_name: restaurant.name,
+    //     user_name: userName
+    // });
+    //
+    // // 오늘의 식당 입력
+    // await newLunch.save();
+    //
+    // const data = {
+    //     text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
+    // };
 
-    // 방문수 업데이트
-    await updateVisitCount(value);
+    const data = value;
 
-    // 결정된 식당 조회
-    const restaurant = await Restaurant.findOne({
-        _id: value
-    });
-
-    const newLunch = new Lunch({
-        lunch_date: util.getCurrentDate(),
-        restaurant_name: restaurant.name,
-        user_name: userName
-    });
-
-    // 오늘의 식당 입력
-    await newLunch.save();
-
-    const data = {
-        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
-    };
-
-    return choiceSend(res, data, responseUrl);
+    choiceSend(res, data, responseUrl);
 };
 
 const test = async (req, res) => {
