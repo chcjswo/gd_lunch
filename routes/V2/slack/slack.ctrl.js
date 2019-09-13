@@ -176,7 +176,7 @@ const choiceSend = (res, payload, responseUrl = null) => {
     const headers = {"Content-type": "application/json"};
     request.post({
         url: process.env.MOCADEV_SLACK_URL,
-        form: JSON.stringify(payload),
+        body: JSON.stringify(payload),
         headers: headers
     }, function (err, res) {
         if (err) {
@@ -272,7 +272,7 @@ const decision = async (req, res) => {
     //     text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     // };
 
-    const data = value;
+    const data = {value};
 
     choiceSend(res, data, responseUrl);
 };
