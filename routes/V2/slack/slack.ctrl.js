@@ -167,7 +167,6 @@ const choiceSend = (res, data, responseUrl = null) => {
         json: data
     };
     request(postOptions, (error, response, body) => {
-        console.log('response ==> ', response);
         console.log('body ==> ', body);
         if (error){
             // handle errors as you see fit
@@ -323,9 +322,11 @@ const test = async (req, res) => {
     };
 
     request(postOptions, (error, response, body) => {
-        if (error){
+        if (error) {
             // handle errors as you see fit
+            console.error('error ==> ', error);
         }
+        console.log('body ==> ', body);
     })
 };
 
