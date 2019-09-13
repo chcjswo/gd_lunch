@@ -176,7 +176,7 @@ const choiceSend = (res, payload, responseUrl = null) => {
     const headers = {"Content-type": "application/json"};
     request.post({
         url: process.env.MOCADEV_SLACK_URL,
-        payload: JSON.stringify(payload),
+        body: JSON.stringify(payload),
         headers: headers
     }, function (err, res) {
         if (err) {
