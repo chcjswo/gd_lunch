@@ -140,37 +140,39 @@ const makeRestaurantSlackMessage = async (userName) => {
 };
 
 const choiceSend = (res, data, responseUrl = null) => {
-    sendSlack(data, (err) => {
-        if (err) {
-            console.error('에러 발생 ===> ', err);
-            res.status(500).end(err);
-        }
-        res.status(200).json();
-    });
-    // res.status(200).end();
-    //
-    // const slackUrl = env !== 'development'
-    //                 ? process.env.MOCADEV_SLACK_URL
-    //                 : process.env.DEV2_SLACK_URL;
-    //
-    // if (responseUrl === null) {
-    //     responseUrl = process.env.MOCADEV_SLACK_URL;
-    // }
-    //
-    // const postOptions = {
-    //     uri: process.env.MOCADEV_SLACK_URL,
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     },
-    //     json: data
-    // };
-    // request(postOptions, (error, response, body) => {
-    //     if (error){
-    //         // handle errors as you see fit
+    // sendSlack(data, (err) => {
+    //     if (err) {
+    //         console.error('에러 발생 ===> ', err);
+    //         res.status(500).end(err);
     //     }
+    //     res.status(200).json();
     // });
 
+    res.status(200).end();
+
+    const slackUrl = env !== 'development'
+                    ? process.env.MOCADEV_SLACK_URL
+                    : process.env.DEV2_SLACK_URL;
+
+    if (responseUrl === null) {
+        responseUrl = process.env.MOCADEV_SLACK_URL;
+    }
+
+    const postOptions = {
+        uri: process.env.MOCADEV_SLACK_URL,
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        json: data
+    };
+    request(postOptions, (error, response, body) => {
+        console.log('response ==> ', response);
+        console.log('body ==> ', body);
+        if (error){
+            // handle errors as you see fit
+        }
+    });
 };
 
 /**
@@ -258,8 +260,74 @@ const decision = async (req, res) => {
     return choiceSend(res, data, responseUrl);
 };
 
+const test = async (req, res) => {
+    res.status(200).end();
+    const data = {
+        "text": "Would you like to play a game?",
+        "attachments": [
+            {
+                "text": "Choose a game to play",
+                "fallback": "You are unable to choose a game",
+                "callback_id": "wopr_game",
+                "color": "#3AA3E3",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "game",
+                        "text": "Chess",
+                        "type": "button",
+                        "value": "chess"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Falken's Maze",
+                        "type": "button",
+                        "value": "maze"
+                    },
+                    {
+                        "name": "game",
+                        "text": "Thermonuclear War",
+                        "style": "danger",
+                        "type": "button",
+                        "value": "war",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "Wouldn't you prefer a good game of chess?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+
+    // sendSlack(data, (err) => {
+    //     if (err) {
+    //         console.error('에러 발생 ===> ', err);
+    //         return res.status(500).end(err);
+    //     }
+    //     return res.status(201).json(data);
+    // });
+    const postOptions = {
+        uri: process.env.MOCADEV_SLACK_URL,
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        json: data
+    };
+
+    request(postOptions, (error, response, body) => {
+        if (error){
+            // handle errors as you see fit
+        }
+    })
+};
+
 module.exports = {
     list,
     decision,
-    choice
+    choice,
+    test
 };
