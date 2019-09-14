@@ -139,7 +139,7 @@ const makeRestaurantSlackMessage = async (userName) => {
     };
 };
 
-const choiceSend = (res, payload, responseUrl = null) => {
+const choiceSend = (res, data, responseUrl = null) => {
     res.status(200).end();
 
     sendSlack(data, (err, response) => {
@@ -243,7 +243,6 @@ const decision = async (req, res) => {
     if (value === 'resend') {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
         const data = await makeRestaurantSlackMessage(userName);
-
         choiceSend(res, data, responseUrl);
 
         return;
