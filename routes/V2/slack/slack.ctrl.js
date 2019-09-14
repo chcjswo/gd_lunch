@@ -140,23 +140,24 @@ const makeRestaurantSlackMessage = async (userName) => {
 };
 
 const choiceSend = (res, payload, responseUrl = null) => {
-    // sendSlack(data, (err) => {
-    //     if (err) {
-    //         console.error('에러 발생 ===> ', err);
-    //         res.status(500).end(err);
-    //     }
-    //     res.status(200).json();
-    // });
-
     res.status(200).end();
 
-    const slackUrl = env !== 'development'
-        ? process.env.MOCADEV_SLACK_URL
-        : process.env.DEV2_SLACK_URL;
+    sendSlack(data, (err, response) => {
+        console.log('response ==> ', response);
+        if (err) {
+            console.error('에러 발생 ===> ', err);
+            return res.status(500).end(err);
+        }
+        return res.status(200).end();
+    });
 
-    if (responseUrl === null) {
-        responseUrl = process.env.MOCADEV_SLACK_URL;
-    }
+    // const slackUrl = env !== 'development'
+    //     ? process.env.MOCADEV_SLACK_URL
+    //     : process.env.DEV2_SLACK_URL;
+    //
+    // if (responseUrl === null) {
+    //     responseUrl = process.env.MOCADEV_SLACK_URL;
+    // }
 
     // const postOptions = {
     //     uri: process.env.MOCADEV_SLACK_URL,
@@ -173,19 +174,19 @@ const choiceSend = (res, payload, responseUrl = null) => {
     //     }
     // });
 
-    const headers = {"Content-type": "application/json"};
-    request.post({
-        url: process.env.MOCADEV_SLACK_URL,
-        body: JSON.stringify(payload),
-        headers: headers
-    }, function (err, res) {
-        if (err) {
-            console.log(err);
-        }
-        if (res) {
-            console.log('body ==> ', res.body);
-        }
-    });
+    // const headers = {"Content-type": "application/json"};
+    // request.post({
+    //     url: process.env.MOCADEV_SLACK_URL,
+    //     body: JSON.stringify(payload),
+    //     headers: headers
+    // }, function (err, res) {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    //     if (res) {
+    //         console.log('body ==> ', res.body);
+    //     }
+    // });
 };
 
 /**
@@ -359,29 +360,31 @@ const test = async (req, res) => {
         ]
     };
 
-    // sendSlack(data, (err) => {
-    //     if (err) {
-    //         console.error('에러 발생 ===> ', err);
-    //         return res.status(500).end(err);
-    //     }
-    //     return res.status(201).json(data);
-    // });
-    const postOptions = {
-        uri: process.env.MOCADEV_SLACK_URL,
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        json: data
-    };
-
-    request(postOptions, (error, response, body) => {
-        if (error) {
-            // handle errors as you see fit
-            console.error('error ==> ', error);
+    sendSlack(data, (err, response) => {
+        console.log('response ==> ', response);
+        if (err) {
+            console.error('에러 발생 ===> ', err);
+            return res.status(500).end(err);
         }
-        console.log('body ==> ', body);
-    })
+        return res.status(200).end();
+    });
+
+    // const postOptions = {
+    //     uri: process.env.MOCADEV_SLACK_URL,
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     },
+    //     json: data
+    // };
+    //
+    // request(postOptions, (error, response, body) => {
+    //     if (error) {
+    //         // handle errors as you see fit
+    //         console.error('error ==> ', error);
+    //     }
+    //     console.log('body ==> ', body);
+    // })
 };
 
 module.exports = {
