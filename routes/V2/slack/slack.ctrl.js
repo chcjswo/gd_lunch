@@ -91,6 +91,7 @@ const makeRestaurantSlackMessage = async (userName) => {
         attachments: [
             {
                 text,
+                replace_original: false,
                 fallback: "점심식사 선택의 시간 입니다.",
                 callback_id: "lunch",
                 color: "#3AA3E3",
