@@ -1,4 +1,3 @@
-const Slack = require('slack-node');
 const request = require('request');
 const env = process.env.NODE_ENV || 'development';
 
@@ -134,7 +133,7 @@ const choiceSend = (res, payload, responseUrl = null) => {
     }
 
     request.post({
-        url: process.env.MOCADEV_SLACK_URL,
+        url: slackUrl,
         body: JSON.stringify(payload),
         headers: {
             "Content-type": "application/json"
@@ -206,70 +205,28 @@ const decision = async (req, res) => {
         return;
     }
 
-    // //  점심 삭제
-    // await removeLunch();
-    //
-    // // 방문수 업데이트
-    // await updateVisitCount(value);
-    //
-    // // 결정된 식당 조회
-    // const restaurant = await Restaurant.findOne({
-    //     _id: value
-    // });
-    //
-    // const newLunch = new Lunch({
-    //     lunch_date: util.getCurrentDate(),
-    //     restaurant_name: restaurant.name,
-    //     user_name: userName
-    // });
-    //
-    // // 오늘의 식당 입력
-    // await newLunch.save();
-    //
-    // const data = {
-    //     text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
-    // };
+    //  점심 삭제
+    await removeLunch();
 
-    console.log('value ==> ', value);
+    // 방문수 업데이트
+    await updateVisitCount(value);
+
+    // 결정된 식당 조회
+    const restaurant = await Restaurant.findOne({
+        _id: value
+    });
+
+    const newLunch = new Lunch({
+        lunch_date: util.getCurrentDate(),
+        restaurant_name: restaurant.name,
+        user_name: userName
+    });
+
+    // 오늘의 식당 입력
+    await newLunch.save();
 
     const data = {
-        "text": "Would you like to play a game?",
-        "attachments": [
-            {
-                "text": "Choose a game to play",
-                "fallback": "You are unable to choose a game",
-                "callback_id": "wopr_game",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "game",
-                        "text": "Chess",
-                        "type": "button",
-                        "value": "chess"
-                    },
-                    {
-                        "name": "game",
-                        "text": "Falken's Maze",
-                        "type": "button",
-                        "value": "maze"
-                    },
-                    {
-                        "name": "game",
-                        "text": "Thermonuclear War",
-                        "style": "danger",
-                        "type": "button",
-                        "value": "war",
-                        "confirm": {
-                            "title": "Are you sure?",
-                            "text": "Wouldn't you prefer a good game of chess?",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
-                        }
-                    }
-                ]
-            }
-        ]
+        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
     choiceSend(res, data, responseUrl);
