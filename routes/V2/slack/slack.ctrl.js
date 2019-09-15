@@ -1,5 +1,4 @@
 const Slack = require('slack-node');
-const request = require('request');
 const env = process.env.NODE_ENV || 'development';
 
 const util = require('../../../common/util');
@@ -109,7 +108,7 @@ const makeRestaurantSlackMessage = async (userName) => {
         attachments: [
             {
                 text,
-                fallback: "You are unable to choose a lunch",
+                fallback: "점심식사 선택의 시간 입니다.",
                 callback_id: "lunch",
                 color: "#3AA3E3",
                 attachment_type: "default",
@@ -140,53 +139,16 @@ const makeRestaurantSlackMessage = async (userName) => {
 };
 
 const choiceSend = (res, data, responseUrl = null) => {
-    res.status(200).end();
-
     sendSlack(data, (err, response) => {
         console.log('response ==> ', response);
         if (err) {
             console.error('에러 발생 ===> ', err);
-            return res.status(500).end(err);
+            res.status(500).end(err);
+
+            return;
         }
-        return res.status(200).end();
+        res.status(200).end();
     });
-
-    // const slackUrl = env !== 'development'
-    //     ? process.env.MOCADEV_SLACK_URL
-    //     : process.env.DEV2_SLACK_URL;
-    //
-    // if (responseUrl === null) {
-    //     responseUrl = process.env.MOCADEV_SLACK_URL;
-    // }
-
-    // const postOptions = {
-    //     uri: process.env.MOCADEV_SLACK_URL,
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     },
-    //     json: data
-    // };
-    // request(postOptions, (error, response, body) => {
-    //     console.log('body ==> ', body);
-    //     if (error){
-    //         // handle errors as you see fit
-    //     }
-    // });
-
-    // const headers = {"Content-type": "application/json"};
-    // request.post({
-    //     url: process.env.MOCADEV_SLACK_URL,
-    //     body: JSON.stringify(payload),
-    //     headers: headers
-    // }, function (err, res) {
-    //     if (err) {
-    //         console.log(err);
-    //     }
-    //     if (res) {
-    //         console.log('body ==> ', res.body);
-    //     }
-    // });
 };
 
 /**
@@ -237,8 +199,6 @@ const decision = async (req, res) => {
     const value = payload.actions[0].value;
     const responseUrl = payload.response_url;
 
-    console.log('responseUrl => ', responseUrl);
-
     // 재선택인 경우
     if (value === 'resend') {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
@@ -248,77 +208,34 @@ const decision = async (req, res) => {
         return;
     }
 
-    // //  점심 삭제
-    // await removeLunch();
-    //
-    // // 방문수 업데이트
-    // await updateVisitCount(value);
-    //
-    // // 결정된 식당 조회
-    // const restaurant = await Restaurant.findOne({
-    //     _id: value
-    // });
-    //
-    // const newLunch = new Lunch({
-    //     lunch_date: util.getCurrentDate(),
-    //     restaurant_name: restaurant.name,
-    //     user_name: userName
-    // });
-    //
-    // // 오늘의 식당 입력
-    // await newLunch.save();
-    //
-    // const data = {
-    //     text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
-    // };
+    //  점심 삭제
+    await removeLunch();
 
-    console.log('value ==> ', value);
+    // 방문수 업데이트
+    await updateVisitCount(value);
+
+    // 결정된 식당 조회
+    const restaurant = await Restaurant.findOne({
+        _id: value
+    });
+
+    const newLunch = new Lunch({
+        lunch_date: util.getCurrentDate(),
+        restaurant_name: restaurant.name,
+        user_name: userName
+    });
+
+    // 오늘의 식당 입력
+    await newLunch.save();
 
     const data = {
-        "text": "Would you like to play a game?",
-        "attachments": [
-            {
-                "text": "Choose a game to play",
-                "fallback": "You are unable to choose a game",
-                "callback_id": "wopr_game",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "game",
-                        "text": "Chess",
-                        "type": "button",
-                        "value": "chess"
-                    },
-                    {
-                        "name": "game",
-                        "text": "Falken's Maze",
-                        "type": "button",
-                        "value": "maze"
-                    },
-                    {
-                        "name": "game",
-                        "text": "Thermonuclear War",
-                        "style": "danger",
-                        "type": "button",
-                        "value": "war",
-                        "confirm": {
-                            "title": "Are you sure?",
-                            "text": "Wouldn't you prefer a good game of chess?",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
-                        }
-                    }
-                ]
-            }
-        ]
+        text: `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurant.name}* 입니다.`
     };
 
     choiceSend(res, data, responseUrl);
 };
 
 const test = async (req, res) => {
-    res.status(200).end();
     const data = {
         "text": "Would you like to play a game?",
         "attachments": [
@@ -360,12 +277,13 @@ const test = async (req, res) => {
     };
 
     sendSlack(data, (err, response) => {
-        console.log('response ==> ', response);
         if (err) {
             console.error('에러 발생 ===> ', err);
-            return res.status(500).end(err);
+            res.status(500).end(err);
+
+            return;
         }
-        return res.status(200).end();
+        res.status(200).end();
     });
 
     // const postOptions = {
