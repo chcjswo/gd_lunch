@@ -124,9 +124,9 @@ const makeRestaurantSlackMessage = async (userName) => {
 const choiceSend = (res, payload, responseUrl = null) => {
     res.status(200).end();
 
-    const slackUrl = env !== 'development'
-        ? process.env.MOCADEV_SLACK_URL
-        : process.env.DEV2_SLACK_URL;
+    const slackUrl = env === 'production'
+        ? process.env.DEV2_SLACK_URL
+        : process.env.MOCADEV_SLACK_URL;
 
     if (responseUrl === null) {
         responseUrl = process.env.MOCADEV_SLACK_URL;
