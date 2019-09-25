@@ -291,9 +291,21 @@ const test = async (req, res) => {
     });
 };
 
+/**
+ * auth
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+const auth = async (req, res) => {
+    console.log(res.body);
+    res.status(200).json(res.body);
+};
+
 module.exports = {
     list,
     decision,
     choice,
-    test
+    test,
+    auth
 };
