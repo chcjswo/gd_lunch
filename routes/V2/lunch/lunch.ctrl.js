@@ -31,6 +31,7 @@ const randomRestaurant = async () => {
  */
 const list = async (req, res) => {
     try {
+        res.header("Access-Control-Allow-Origin", "*");
         const restaurantList = await Restaurant.find().sort({
             visitCount: -1,
             choiceCount: -1
