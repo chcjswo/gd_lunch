@@ -76,6 +76,7 @@ const create = async (req, res) => {
         //     }
         //     return res.status(201).json([data]);
         // });
+        return res.status(201).json([data]);
     } catch (err) {
         console.error("error ===> ", err);
         return res.status(500).json({
@@ -218,7 +219,7 @@ const decision = async (req, res) => {
         //     return res.status(201).json({result: resultRestaurant});
         // });
 
-        // return res.status(201).json({result: resultRestaurant});
+        return res.status(201).json({result: resultRestaurant});
     } catch (err) {
         console.error("error ==> ", err);
         return res.status(500).json({
@@ -288,6 +289,8 @@ const choiceSlack = async (req, res) => {
         //     }
         //     return res.render("index");
         // });
+
+        return res.render("index");
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.render("index");
