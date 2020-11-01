@@ -69,14 +69,13 @@ const create = async (req, res) => {
         });
         const data = await newRestaurant.save();
 
-        util.sendSlack(`*${restaurantName}*을 추가 하셨습니다.`, 2, null, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-                return res.status(500).end(err);
-            }
-            return res.status(201).json([data]);
-        });
-
+        // util.sendSlack(`*${restaurantName}*을 추가 하셨습니다.`, 2, null, (err) => {
+        //     if (err) {
+        //         console.error('에러 발생 ===> ', err);
+        //         return res.status(500).end(err);
+        //     }
+        //     return res.status(201).json([data]);
+        // });
     } catch (err) {
         console.error("error ===> ", err);
         return res.status(500).json({
@@ -211,13 +210,13 @@ const decision = async (req, res) => {
         // 오늘의 식당 입력
         const resultRestaurant = await newLunch.save();
 
-        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-                return res.status(500).end(err);
-            }
-            return res.status(201).json({result: resultRestaurant});
-        });
+        // util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+        //     if (err) {
+        //         console.error('에러 발생 ===> ', err);
+        //         return res.status(500).end(err);
+        //     }
+        //     return res.status(201).json({result: resultRestaurant});
+        // });
 
         // return res.status(201).json({result: resultRestaurant});
     } catch (err) {
@@ -241,13 +240,13 @@ const sendSlack = async (req, res) => {
             });
         }
 
-        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`, 1, restaurantData._id, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-                return res.status(500).end(err);
-            }
-            return res.status(201).end();
-        });
+        // util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`, 1, restaurantData._id, (err) => {
+        //     if (err) {
+        //         console.error('에러 발생 ===> ', err);
+        //         return res.status(500).end(err);
+        //     }
+        //     return res.status(201).end();
+        // });
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.status(500).json({
@@ -282,13 +281,13 @@ const choiceSlack = async (req, res) => {
         // 오늘의 식당 입력
         await newLunch.save();
 
-        util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-                return res.status(500).end(err);
-            }
-            return res.render("index");
-        });
+        // util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 *${restaurant.name}* 입니다.`, 2, null, (err) => {
+        //     if (err) {
+        //         console.error('에러 발생 ===> ', err);
+        //         return res.status(500).end(err);
+        //     }
+        //     return res.render("index");
+        // });
     } catch (err) {
         console.error("error ==> ", err.message);
         return res.render("index");
