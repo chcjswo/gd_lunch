@@ -31,7 +31,7 @@ const makeRestaurantItem = data => {
 			</svg>
 			<div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
 				<div class="d-flex justify-content-between align-items-center w-100">
-					<strong class="text-gray-dark">${item.name}</strong>
+					<strong class="text-gray-dark"><a href="/map?q=${item.name}">${item.name}</a></strong>
 					<a href="#" onClick="onClickRemove('${item._id}', '${item.name}', ${
             item.visitCount
         })">삭제</a>
@@ -277,6 +277,10 @@ function removeRestaurant(no) {
         });
 }
 
+const onClickShowMap = () => {
+    location.href = "/map";
+};
+
 /**
  * 식당 재선택
  */
@@ -297,6 +301,9 @@ $(function() {
     });
     $(".reChoiceRestaurant").click(function() {
         onClickChoiceRestaurant();
+    });
+    $(".showMap").click(function() {
+        onClickShowMap();
     });
     $("#restaurantName").keydown(function(key) {
         if (key.keyCode == 13) {

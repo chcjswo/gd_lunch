@@ -12,5 +12,8 @@ router.use("/api/v2/slack", slackV2);
 router.get("/", (req, res) => {
     return res.render("index");
 });
+router.get("/map", (req, res) => {
+    return res.render("map", {q: req.query.q});
+});
 
 module.exports = router;

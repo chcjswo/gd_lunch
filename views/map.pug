@@ -1,0 +1,23 @@
+extends ./layout/layout
+
+block style
+    link(href='/css/vendor.css', rel='stylesheet', type='text/css')
+
+block mapJavascripts
+    include ./partials/mapJavascripts
+
+block content
+    main(role="main" class="container main")
+        #navbar 식당은 어디에?
+        #search
+            input#search_input(placeholder="목적지를 입력해주세요." value=q)
+            button#search_button 검색
+        #current 현재위치
+        #index 점심선택
+        #map(style="width:100%;height:100vh;")
+
+    include ./partials/javascripts
+
+block javascript
+    script(type='text/javascript', src='/js/notify.min.js')
+    script(type='text/javascript', src='/js/map.js')
