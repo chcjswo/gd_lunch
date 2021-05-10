@@ -6,8 +6,7 @@ const bodyParser = require("body-parser");
 const router = require("./routes");
 const mongoose = require("mongoose");
 const favicon = require("serve-favicon");
-const got = require('got');
-const schedule = require('node-schedule');
+const schedule = require('./shedule/schedules');
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
@@ -49,15 +48,9 @@ app.use(router);
 // heroku port 설정
 const port = process.env.PORT || 3000;
 
+// 알람 실행
+schedule.lunchChoiceSchedule();
+
 app.listen(port, () => {
     console.log("GD Lunch app listening on port 3000!");
-});
-
-/**
- * 점심 선택 알림
- */
-schedule.scheduleJob('30 12 * * 1-5', () => {
-    got.post('http://lunch.mocadev.me/api/v2/slack/choice/');
-
-    console.log('점심선택 알람을 보냈습니다.');
 });
