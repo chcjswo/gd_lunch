@@ -304,7 +304,33 @@ const auth = async (req, res) => {
 
 const commandAddRestaurant = async (req, res) => {
     console.log(req.body);
-    res.status(200).json(res.body);
+
+    try {
+        const restaurantName = req.body.text;
+        const newRestaurant = new Restaurant({
+            name: restaurantName
+        });
+        const data = await newRestaurant.save();
+
+        util.sendSlack(`*${restaurantName}*을 추가 하셨습니다.`, 2, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
+            return res.status(201).json({
+                text: '식당을 추가 하셨습니다.',
+                'attachments': [{
+                    'fields': restaurantName,
+                    'color': '#F35A00'
+                }]
+            });
+        });
+    } catch (err) {
+        console.error('error ===> ', err);
+        return res.status(500).json({
+            message: '식당 등록중 에러가 발생했습니다.'
+        });
+    }
 };
 
 const commandChoiceRestaurant = async (req, res) => {
@@ -320,4 +346,4 @@ module.exports = {
     auth,
     commandAddRestaurant,
     commandChoiceRestaurant
-};
+}
