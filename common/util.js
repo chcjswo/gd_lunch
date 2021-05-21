@@ -35,10 +35,10 @@ const sendSlack = (message, type, id, cb) => {
 
     if (type === 2) {
         json = {
-            username: '점심 뭐 먹지??',
-            icon_emoji: ':rice:',
-            mrkdwn: true,
-            text: message
+            'username': '점심 뭐 먹지??',
+            'icon_emoji': ':rice:',
+            'mrkdwn': true,
+            'text': message
         };
     }
 
