@@ -302,10 +302,22 @@ const auth = async (req, res) => {
     res.status(200).json(res.body);
 };
 
+const commandAddRestaurant = async (req, res) => {
+    console.log(req.body);
+    res.status(200).json(res.body);
+};
+
+const commandChoiceRestaurant = async (req, res) => {
+    console.log(req.body);
+    res.status(200).json(res.body);
+};
+
 module.exports = {
     list,
     decision,
     choice,
     test,
-    auth
+    auth,
+    commandAddRestaurant,
+    commandChoiceRestaurant
 };
