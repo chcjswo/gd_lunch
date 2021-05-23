@@ -66,9 +66,10 @@ const list = async (req, res) => {
 /**
  * 랜덤 식당 선택 후 슬랙 메시지 만들기
  * @param userName 유저 이름
+ * @param res response
  * @returns {Promise<*>}
  */
-const makeRestaurantSlackMessage = async (userName) => {
+const makeRestaurantSlackMessage = async (userName, res) => {
     // 랜점 점심 선택
     const restaurantData = await randomRestaurant();
 
@@ -156,7 +157,7 @@ const choiceSend = (res, payload, responseUrl = null) => {
  */
 const choice = async (req, res) => {
     // 랜덤 점심 선택 및 슬랙 메시지 만들기
-    const data = await makeRestaurantSlackMessage(null);
+    const data = await makeRestaurantSlackMessage(null, res);
 
     choiceSend(res, data);
 };
@@ -164,7 +165,7 @@ const choice = async (req, res) => {
 /**
  * 점심 삭제
  */
-const removeLunch = () => {
+const removeLunch = async () => {
     Lunch.deleteOne({
         lunch_date: util.getCurrentDate()
     });
@@ -174,7 +175,7 @@ const removeLunch = () => {
  * 방문수 업데이트
  * @param no 고유번호
  */
-const updateVisitCount = (no) => {
+const updateVisitCount = async (no) => {
     return Restaurant.updateOne({
         _id: no
     }, {
@@ -199,7 +200,7 @@ const decision = async (req, res) => {
     // 재선택인 경우
     if (value === 'resend') {
         // 랜덤 점심 선택 및 슬랙 메시지 만들기
-        const data = await makeRestaurantSlackMessage(userName);
+        const data = await makeRestaurantSlackMessage(userName, res);
         choiceSend(res, data, responseUrl);
 
         return;
@@ -302,12 +303,21 @@ const auth = async (req, res) => {
     res.status(200).json(res.body);
 };
 
+const findRestaurant = async (restaurantName) => {
+    return Restaurant.findOne({
+        name: restaurantName
+    });
+};
+
 const commandAddRestaurant = async (req, res) => {
     try {
         const restaurantName = req.body.text;
-        const findData = await Restaurant.findOne({
-            name: restaurantName
-        });
+
+        if (!restaurantName) {
+            return res.status(400).end();
+        }
+
+        const findData = await findRestaurant(restaurantName);
 
         if (findData) {
             util.sendSlack(`*${restaurantName}* 는 이미 추가된 식당 입니다.`, 2, null, (err) => {
@@ -340,8 +350,45 @@ const commandAddRestaurant = async (req, res) => {
 };
 
 const commandChoiceRestaurant = async (req, res) => {
-    console.log(req.body);
-    res.status(200).json(res.body);
+    const restaurantName = req.body.text;
+    const userName = req.body.user_name;
+
+    if (!restaurantName) {
+        return res.status(400).end();
+    }
+
+    const findData = await findRestaurant(restaurantName);
+
+    if (!findData) {
+        util.sendSlack(`*${restaurantName}* 는 추가되지 않은 식당 입니다.\n'/lunch'로 식당을 확인해주세요.`, 2, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+                return res.status(500).end(err);
+            }
+        });
+        return res.status(404).end();
+    }
+
+    //  점심 삭제
+    await removeLunch();
+
+    await Restaurant.updateOne({
+        name: restaurantName
+    }, {
+        $inc: {
+            visitCount: 1,
+            choiceCount: 1
+        }
+    });
+
+    util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantName}* 어떠세요?`, 2, null, (err) => {
+        if (err) {
+            console.error('에러 발생 ===> ', err);
+            return res.status(500).end(err);
+        }
+    });
+
+    res.status(200).end();
 };
 
 module.exports = {
