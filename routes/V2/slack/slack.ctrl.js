@@ -360,7 +360,8 @@ const commandChoiceRestaurant = async (req, res) => {
     const findData = await findRestaurant(restaurantName);
 
     if (!findData) {
-        util.sendSlack(`*${restaurantName}* 는 추가되지 않은 식당 입니다.\n'/lunch'로 식당을 확인해주세요.`, 2, null, (err) => {
+        const slackMessage = `*${restaurantName}* 는 추가되지 않은 식당 입니다.\n'/lunch'로 식당을 확인해주세요.`;
+        util.sendSlack(slackMessage, 2, null, (err) => {
             if (err) {
                 console.error('에러 발생 ===> ', err);
                 return res.status(500).end(err);
@@ -381,13 +382,13 @@ const commandChoiceRestaurant = async (req, res) => {
         }
     });
 
-    util.sendSlack(`${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantName}* 어떠세요?`, 2, null, (err) => {
+    const slackMessage = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantName}* 어떠세요?`;
+    util.sendSlack(slackMessage, 2, null, (err) => {
         if (err) {
             console.error('에러 발생 ===> ', err);
             return res.status(500).end(err);
         }
     });
-
     res.status(200).end();
 };
 

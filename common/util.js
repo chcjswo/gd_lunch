@@ -40,6 +40,8 @@ const sendSlack = (message, type, id, cb) => {
             'mrkdwn': true,
             'text': message
         };
+    } else if (type === 3)  {
+        json = message;
     }
 
     slack.webhook(json, cb);
@@ -56,7 +58,22 @@ const getCurrentDate = () => {
         .padStart(2, "0")}`;
 };
 
+const makeSlackMessage = (emoji, color, title, value) => ({
+    username: '알람',
+    icon_emoji: `:${emoji}:`,
+    attachments: [{
+        fallback: '알람이 도착 했습니다.',
+        color,
+        fields: [{
+            title,
+            value,
+            short: false,
+        }],
+    }],
+});
+
 module.exports = {
     sendSlack,
-    getCurrentDate
+    getCurrentDate,
+    makeSlackMessage
 };
