@@ -20,6 +20,11 @@ npm run start
 * 1.1
     * 논현동 점심메뉴 선택
 
+* 1.2
+    * Slack Slash Command 추가
+        * /lunch -> 식당 메뉴
+        * /add {식당 이름} -> 해당 식당 추가
+        * /choice {식당 이름} -> 해당 식당 선택 치트키
 
 ## 정보
 
