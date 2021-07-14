@@ -10,6 +10,10 @@ const sendSlack = (message, type, id, cb) => {
         apiUrl = 'http://lunch.mocadev.me';
     }
 
+    if (env !== 'development' && type === 4) {
+        slackUrl = process.env.RANDOM_SLACK_URL;
+    }
+
     const slack = new Slack();
     slack.setWebhook(slackUrl);
 
@@ -35,13 +39,21 @@ const sendSlack = (message, type, id, cb) => {
 
     if (type === 2) {
         json = {
-            'username': '점심 뭐 먹지??',
-            'icon_emoji': ':rice:',
-            'mrkdwn': true,
-            'text': message
+            username: '점심 뭐 먹지??',
+            icon_emoji: ':rice:',
+            mrkdwn: true,
+            text: message
         };
     } else if (type === 3)  {
         json = message;
+    } else if (type === 4)  {
+        json = {
+            username: '코로나바이러스 현황',
+            icon_emoji: ':alarm:',
+            mrkdwn: true,
+            channel: '#random',
+            text: message
+        };
     }
 
     slack.webhook(json, cb);
