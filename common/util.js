@@ -49,7 +49,7 @@ const sendSlack = (message, type, id, cb) => {
     } else if (type === 4)  {
         json = {
             username: '코로나바이러스 현황',
-            icon_emoji: ':alarm:',
+            icon_emoji: ':hospital:',
             mrkdwn: true,
             channel: '#random',
             text: message
