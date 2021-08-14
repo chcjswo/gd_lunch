@@ -69,6 +69,19 @@ const lunchChoiceSchedule = () => {
         });
         console.log('코로나 알람을 보냈습니다.');
     });
+
+    /**
+     * 서버 개발팀 알림
+     */
+    schedule.scheduleJob('30 10 * * 1-5', () => {
+        const message = '서버 개발팀 알림 테스트';
+        util.sendSlack(message, 5, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+            }
+        });
+        console.log('서버 개발팀 알람을 보냈습니다.');
+    });
 };
 
 module.exports = {

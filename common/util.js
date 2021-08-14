@@ -37,23 +37,39 @@ const sendSlack = (message, type, id, cb) => {
         }]
     };
 
-    if (type === 2) {
-        json = {
-            username: '점심 뭐 먹지??',
-            icon_emoji: ':rice:',
-            mrkdwn: true,
-            text: message
-        };
-    } else if (type === 3)  {
-        json = message;
-    } else if (type === 4)  {
-        json = {
-            username: '코로나바이러스 현황',
-            icon_emoji: ':hospital:',
-            mrkdwn: true,
-            channel: '#random',
-            text: message
-        };
+    switch (type) {
+        case 2:
+            json = {
+                username: '점심 뭐 먹지??',
+                icon_emoji: ':rice:',
+                mrkdwn: true,
+                text: message
+            };
+            break;
+
+        case 3:
+            json = message;
+            break;
+
+        case 4:
+            json = {
+                username: '코로나바이러스 현황',
+                icon_emoji: ':hospital:',
+                mrkdwn: true,
+                channel: '#random',
+                text: message
+            };
+            break;
+
+        case 5:
+            json = {
+                username: '서버 개발팀 알림',
+                icon_emoji: ':alert:',
+                mrkdwn: true,
+                channel: '#서버개발팀',
+                text: message
+            };
+            break;
     }
 
     slack.webhook(json, cb);
