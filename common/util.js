@@ -12,6 +12,8 @@ const sendSlack = (message, type, id, cb) => {
 
     if (env !== 'development' && type === 4) {
         slackUrl = process.env.RANDOM_SLACK_URL;
+    } else if (env !== 'development' && type === 5) {
+        slackUrl = process.env.SERVER_DEV_SLACK_URL;
     }
 
     const slack = new Slack();
