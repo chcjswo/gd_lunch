@@ -73,7 +73,7 @@ const lunchChoiceSchedule = () => {
     /**
      * 서버 개발팀 알림
      */
-    schedule.scheduleJob('0 15 * * 1', () => {
+    schedule.scheduleJob('0 15 * * 2', () => {
         const message = '서버 개발팀 주간회의 시간입니다.\n회의실로 모여주세요~~';
         util.sendSlack(message, 5, null, (err) => {
             if (err) {
