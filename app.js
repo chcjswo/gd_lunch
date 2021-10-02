@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const router = require("./routes");
 const mongoose = require("mongoose");
 const favicon = require("serve-favicon");
-const schedule = require('./shedule/schedules');
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
@@ -47,9 +46,6 @@ app.use(router);
 
 // heroku port 설정
 const port = process.env.PORT || 3000;
-
-// 알람 실행
-schedule.lunchChoiceSchedule();
 
 app.listen(port, () => {
     console.log("GD Lunch app listening on port 3000!");
