@@ -1,5 +1,8 @@
 const Slack = require('slack-node');
 const env = process.env.NODE_ENV || 'development';
+const { IncomingWebhook } = require('ms-teams-webhook');
+const url = process.env.TEAMS_SERVER_TEAM_URL;
+const webhook = new IncomingWebhook(url);
 
 const sendSlack = (message, type, id, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
@@ -77,6 +80,26 @@ const sendSlack = (message, type, id, cb) => {
     slack.webhook(json, cb);
 };
 
+const sendTeamsMessage = async (title, subTitle, message) => {
+    await webhook.send(JSON.stringify({
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "summary": title,
+            "themeColor": "0078D7",
+            "title": title,
+            "sections": [
+                {
+                    "activityTitle": title,
+                    "activitySubtitle": subTitle,
+                    "activityImage": "https://cdn.pixabay.com/photo/2020/04/28/06/57/medicine-5103043_960_720.jpg",
+                    "text": message
+                }
+            ],
+            "markdown": true
+        })
+    );
+};
+
 const getCurrentDate = () => {
     const d = new Date();
 
@@ -105,5 +128,6 @@ const makeSlackMessage = (emoji, color, title, value) => ({
 module.exports = {
     sendSlack,
     getCurrentDate,
-    makeSlackMessage
+    makeSlackMessage,
+    sendTeamsMessage
 };
