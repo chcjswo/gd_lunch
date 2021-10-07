@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const router = require("./routes");
 const mongoose = require("mongoose");
 const favicon = require("serve-favicon");
+const teamsSchedules = require('./shedule/teamsSchedules');
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
@@ -43,6 +44,9 @@ app.use(express.static(path.join(__dirname, "public")));
 // //////////// router 설정 //////////////////////
 app.use(router);
 // //////////////////////////////////////////////
+
+// 알람 실행
+teamsSchedules.lunchChoiceSchedule();
 
 // heroku port 설정
 const port = process.env.PORT || 3000;
