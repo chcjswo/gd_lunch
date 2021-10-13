@@ -46,7 +46,7 @@ app.use(router);
 // //////////////////////////////////////////////
 
 // 알람 실행
-teamsSchedules.lunchChoiceSchedule();
+teamsSchedules.teamsAlarmSchedule();
 
 // heroku port 설정
 const port = process.env.PORT || 3000;

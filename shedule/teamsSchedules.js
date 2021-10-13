@@ -3,10 +3,7 @@ const schedule = require('node-schedule');
 const util = require('../common/util');
 const cheerio = require('cheerio');
 
-/**
- * 점심 선택 알림
- */
-const lunchChoiceSchedule = () => {
+const teamsAlarmSchedule = () => {
     /**
      * 코로나 알림
      */
@@ -26,19 +23,19 @@ const lunchChoiceSchedule = () => {
         const deathSum = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(1) > dl > dd').text();
         const deathPreviousDay = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(2) > dl > dd > span').text();
 
-        const data = `${title}\n`
-            + `확진환자 누적: ${sum} 명\n`
-            + `전일대비 확진환자 수: ${confirmed} 명\n`
-            + `전일대비 국내발생: ${domestic} 명\n`
-            + `전일대비 해외발생: ${overseas} 명\n`
-            + `격리해제 누적: ${releaseSum} 명\n`
-            + `격리해제 전일대비: ${releasePreviousDay} 명\n`
-            + `격리중 누적: ${progressSum} 명\n`
-            + `격리중 전일대비: ${progressPreviousDay} 명\n`
-            + `사망 누적: ${deathSum} 명\n`
-            + `사망 전일대비: ${deathPreviousDay} 명\n`;
+        const data = `${title}<br>`
+            + `확진환자 누적: ${sum} 명<br>`
+            + `전일대비 확진환자 수: ${confirmed} 명<br>`
+            + `전일대비 국내발생: ${domestic} 명<br>`
+            + `전일대비 해외발생: ${overseas} 명<br>`
+            + `격리해제 누적: ${releaseSum} 명<br>`
+            + `격리해제 전일대비: ${releasePreviousDay} 명<br>`
+            + `격리중 누적: ${progressSum} 명<br>`
+            + `격리중 전일대비: ${progressPreviousDay} 명<br>`
+            + `사망 누적: ${deathSum} 명<br>`
+            + `사망 전일대비: ${deathPreviousDay} 명<br>`;
 
-        util.sendTeamsMessage('코로나 알람', '오늘의 코로나 정보', data)
+        util.sendTeamsMessage('코로나 알람', '오늘의 코로나 정보', data, process.env.TEAMS_RANDOM_URL)
             .then(result => {
                 console.log(result);
             }).catch(error => {
@@ -51,16 +48,17 @@ const lunchChoiceSchedule = () => {
      * 서버 개발팀 알림
      */
     schedule.scheduleJob('0 14 * * 1', () => {
-        const message = '서버 개발팀 주간회의 시간입니다.\n회의실로 모여주세요~~';
-        util.sendSlack(message, 5, null, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-            }
+        const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
+        util.sendTeamsMessage('회의 알람', '서버 개발팀 주간회의', data, process.env.TEAMS_SERVER_TEAM_URL)
+            .then(result => {
+                console.log(result);
+            }).catch(error => {
+            console.error('코로나 알람 에러 발생 ===> ', error);
         });
         console.log('서버 개발팀 알람을 보냈습니다.');
     });
 };
 
 module.exports = {
-    lunchChoiceSchedule
+    teamsAlarmSchedule
 };
