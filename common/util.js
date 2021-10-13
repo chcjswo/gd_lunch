@@ -1,8 +1,6 @@
 const Slack = require('slack-node');
 const env = process.env.NODE_ENV || 'development';
 const { IncomingWebhook } = require('ms-teams-webhook');
-const url = process.env.TEAMS_SERVER_TEAM_URL;
-const webhook = new IncomingWebhook(url);
 
 const sendSlack = (message, type, id, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
@@ -80,7 +78,8 @@ const sendSlack = (message, type, id, cb) => {
     slack.webhook(json, cb);
 };
 
-const sendTeamsMessage = async (title, subTitle, message) => {
+const sendTeamsMessage = async (title, subTitle, message, url) => {
+    const webhook = new IncomingWebhook(url);
     await webhook.send(JSON.stringify({
             "@type": "MessageCard",
             "@context": "https://schema.org/extensions",
