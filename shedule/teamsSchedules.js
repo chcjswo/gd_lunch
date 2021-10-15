@@ -4,6 +4,11 @@ const util = require('../common/util');
 const cheerio = require('cheerio');
 
 const teamsAlarmSchedule = () => {
+    schedule.scheduleJob('10 12 * * 1-5', () => {
+        got.post('http://lunch.mocadev.me/api/v2/teams/choice/');
+        console.log('점심선택 알람을 보냈습니다.');
+    });
+
     /**
      * 코로나 알림
      */

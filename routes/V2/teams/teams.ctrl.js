@@ -62,42 +62,41 @@ const makeRestaurantTeamsMessage = async (userName, res) => {
         text = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantData.name}* 어떠세요?`;
     }
 
-    return {
-        username: '점심 뭐 먹지??',
-        icon_emoji: ':rice:',
-        mrkdwn: true,
-        attachments: [
+    return JSON.stringify({
+        'r@type': 'MessageCard',
+        '@context': 'https://schema.org/extensions',
+        'summary': '점심 뭐 먹지??',
+        'themeColor': '0078D7',
+        'title': '점심 뭐 먹지??',
+        'sections': [
             {
-                text,
-                replace_original: false,
-                fallback: "점심식사 선택의 시간 입니다.",
-                callback_id: "lunch",
-                color: "#3AA3E3",
-                attachment_type: "default",
-                actions: [
-                    {
-                        name: "lunch",
-                        text: "점심 선택",
-                        type: "button",
-                        value: restaurantData._id
-                    },
-                    {
-                        name: "lunch",
-                        text: "다시 선택",
-                        style: "danger",
-                        type: "button",
-                        value: "resend",
-                        confirm: {
-                            title: "점심 다시 선택??",
-                            text: `${restaurantData.name} 말고 다시 선택 하시겠습니까?`,
-                            ok_text: "다시 선택",
-                            dismiss_text: "그냥 먹을래"
-                        }
-                    }
-                ]
+                'activityTitle': '점심 뭐 먹지??',
+                'activitySubtitle': '점심식사 선택의 시간 입니다.',
+                'activityImage': 'https://cdn.pixabay.com/photo/2020/04/28/06/57/medicine-5103043_960_720.jpg',
+                'text': text
             }
-        ]
-    };
+        ],
+        'markdown': true
+    });
+};
+
+const choiceSend = (res, payload) => {
+    res.status(200).end();
+
+    request.post({
+        url: process.env.TEAMS_SERVER_TEAM_URL,
+        body: JSON.stringify(payload),
+        headers: {
+            "Content-type": "application/json"
+        }
+    }, (err, res) => {
+        if (err) {
+            console.log(err);
+        }
+        if (res) {
+            console.log('body ==> ', res.body);
+        }
+    });
 };
 
 module.exports = {
