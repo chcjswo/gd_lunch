@@ -52,13 +52,13 @@ const teamsAlarmSchedule = () => {
     /**
      * 서버 개발팀 알림
      */
-    schedule.scheduleJob('0 14 * * 1', () => {
+    schedule.scheduleJob('0 15 * * 1', () => {
         const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
         util.sendTeamsMessage('회의 알람', '서버 개발팀 주간회의', data, process.env.TEAMS_SERVER_TEAM_URL)
             .then(result => {
                 console.log(result);
             }).catch(error => {
-            console.error('코로나 알람 에러 발생 ===> ', error);
+            console.error('서버 개발팀 주간회의 알람 에러 발생 ===> ', error);
         });
         console.log('서버 개발팀 알람을 보냈습니다.');
     });
