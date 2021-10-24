@@ -14,8 +14,15 @@ const Lunch = require("../../../models/mongo/Lunch");
 const choice = async (req, res) => {
     // 랜덤 점심 선택 및 teams 메시지 만들기
     const data = await makeRestaurantTeamsMessage(null, res);
+    util.sendTeamsMessage('점심 알람', '오늘의 점심은??', data, process.env.TEAMS_SERVER_TEAM_URL)
+        .then(result => {
+            console.log(result);
+        }).catch(error => {
+        console.error('점심 알람 에러 발생 ===> ', error);
+    });
+    console.log('점심 알람을 보냈습니다.');
 
-    choiceSend(res, data);
+    res.status(200).end();
 };
 
 const randomRestaurant = async () => {
@@ -57,46 +64,10 @@ const makeRestaurantTeamsMessage = async (userName, res) => {
         });
     }
 
-    let text = `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`;
     if (userName !== null) {
-        text = `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantData.name}* 어떠세요?`;
+        return `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantData.name}* 어떠세요?`;
     }
-
-    return JSON.stringify({
-        'r@type': 'MessageCard',
-        '@context': 'https://schema.org/extensions',
-        'summary': '점심 뭐 먹지??',
-        'themeColor': '0078D7',
-        'title': '점심 뭐 먹지??',
-        'sections': [
-            {
-                'activityTitle': '점심 뭐 먹지??',
-                'activitySubtitle': '점심식사 선택의 시간 입니다.',
-                'activityImage': 'https://cdn.pixabay.com/photo/2020/04/28/06/57/medicine-5103043_960_720.jpg',
-                'text': text
-            }
-        ],
-        'markdown': true
-    });
-};
-
-const choiceSend = (res, payload) => {
-    res.status(200).end();
-
-    request.post({
-        url: process.env.TEAMS_SERVER_TEAM_URL,
-        body: JSON.stringify(payload),
-        headers: {
-            "Content-type": "application/json"
-        }
-    }, (err, res) => {
-        if (err) {
-            console.log(err);
-        }
-        if (res) {
-            console.log('body ==> ', res.body);
-        }
-    });
+    return `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`;
 };
 
 module.exports = {
