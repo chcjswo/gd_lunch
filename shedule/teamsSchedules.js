@@ -62,6 +62,26 @@ const teamsAlarmSchedule = () => {
         });
         console.log('서버 개발팀 알람을 보냈습니다.');
     });
+
+    /**
+     * 점심시간 알림
+     */
+    schedule.scheduleJob('30 12 * * 1-5', () => {
+        const message = `신나는 점심 시간 입니다.<br>빨리 엘베 앞으로 고고고~~`;
+        util.sendTeamsMessage('점심 알람', '점심 뭐 먹지??', data, process.env.TEAMS_SERVER_TEAM_URL)
+            .then(result => {
+                console.log(result);
+            }).catch(error => {
+            console.error('점심 알람 에러 발생 ===> ', error);
+        });
+
+        util.sendSlack(message, 3, null, (err) => {
+            if (err) {
+                console.error('에러 발생 ===> ', err);
+            }
+        });
+        console.log('점심 알람을 보냈습니다.');
+    });
 };
 
 module.exports = {
