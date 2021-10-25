@@ -13,7 +13,12 @@ const Lunch = require("../../../models/mongo/Lunch");
  */
 const choice = async (req, res) => {
     // 랜덤 점심 선택 및 teams 메시지 만들기
-    const data = await makeRestaurantTeamsMessage(null, res);
+    const data = await makeRestaurantTeamsMessage();
+    if (!data) {
+        return res.status(404).json({
+            message: "선택할 식당이 없습니다."
+        });
+    }
     util.sendTeamsMessage('점심 알람', '오늘의 점심은??', data, process.env.TEAMS_SERVER_TEAM_URL)
         .then(result => {
             console.log(result);
@@ -48,26 +53,20 @@ const randomRestaurant = async () => {
     return restaurantData;
 };
 
+const getUserName = () => {
+    const userNames = ['전민철', '송화영', '명수창', '엄창민', '정우빈', '서청원'];
+    const index = Math.floor(Math.random() * userNames.length);
+    return userNames[index];
+};
+
 /**
  * 랜덤 식당 선택 후 teams 메시지 만들기
- * @param userName 유저 이름
- * @param res response
  * @returns {Promise<*>}
  */
-const makeRestaurantTeamsMessage = async (userName, res) => {
+const makeRestaurantTeamsMessage = async () => {
     // 랜점 점심 선택
     const restaurantData = await randomRestaurant();
-
-    if (!restaurantData) {
-        return res.status(404).json({
-            message: "선택할 식당이 없습니다."
-        });
-    }
-
-    if (userName !== null) {
-        return `${util.getCurrentDate()} 오늘의 점심은 ${userName}님이 선택한 *${restaurantData.name}* 어떠세요?`;
-    }
-    return `${util.getCurrentDate()} 오늘의 점심은 *${restaurantData.name}* 어떠세요?`;
+    return `${util.getCurrentDate()} 오늘의 점심은 ${getUserName()}님이 선택한 <b>${restaurantData.name}</b> 어떠세요?`;
 };
 
 module.exports = {
