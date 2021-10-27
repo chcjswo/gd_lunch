@@ -19,7 +19,12 @@ const choice = async (req, res) => {
             message: "선택할 식당이 없습니다."
         });
     }
-    util.sendTeamsMessage('점심 알람', '오늘의 점심은??', data, process.env.TEAMS_SERVER_TEAM_URL)
+    util.sendTeamsMessage('점심 알람',
+        '오늘의 점심은??',
+        data,
+        process.env.TEAMS_SERVER_TEAM_URL,
+        "https://t1.daumcdn.net/cfile/tistory/241104445948D27B09"
+    )
         .then(result => {
             console.log(result);
         }).catch(error => {
