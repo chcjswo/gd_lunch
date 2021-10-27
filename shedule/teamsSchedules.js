@@ -40,12 +40,17 @@ const teamsAlarmSchedule = () => {
             + `사망 누적: ${deathSum} 명<br>`
             + `사망 전일대비: ${deathPreviousDay} 명<br>`;
 
-        util.sendTeamsMessage('코로나 알람', '오늘의 코로나 정보', data, process.env.TEAMS_RANDOM_URL)
+        util.sendTeamsMessage('코로나 알람',
+            '오늘의 코로나 정보',
+            data,
+            process.env.TEAMS_RANDOM_URL,
+            "https://img.lovepik.com/element/45004/7323.png_860.png"
+        )
             .then(result => {
                 console.log(result);
             }).catch(error => {
-                console.error('코로나 알람 에러 발생 ===> ', error);
-            });
+            console.error('코로나 알람 에러 발생 ===> ', error);
+        });
         console.log('코로나 알람을 보냈습니다.');
     });
 
@@ -54,7 +59,12 @@ const teamsAlarmSchedule = () => {
      */
     schedule.scheduleJob('0 15 * * 1', () => {
         const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
-        util.sendTeamsMessage('회의 알람', '서버 개발팀 주간회의', data, process.env.TEAMS_SERVER_TEAM_URL)
+        util.sendTeamsMessage('회의 알람',
+            '서버 개발팀 주간회의',
+            data,
+            process.env.TEAMS_SERVER_TEAM_URL,
+            "https://cdn.icon-icons.com/icons2/2387/PNG/512/meetings_meeting_table_people_work_icon_144587.png"
+        )
             .then(result => {
                 console.log(result);
             }).catch(error => {
@@ -68,17 +78,15 @@ const teamsAlarmSchedule = () => {
      */
     schedule.scheduleJob('30 12 * * 1-5', () => {
         const message = `신나는 점심 시간 입니다.<br>빨리 엘베 앞으로 고고고~~`;
-        util.sendTeamsMessage('점심 알람', '점심 뭐 먹지??', data, process.env.TEAMS_SERVER_TEAM_URL)
+        util.sendTeamsMessage('점심 알람',
+            '점심 뭐 먹지??',
+            data,
+            process.env.TEAMS_SERVER_TEAM_URL,
+            "https://t1.daumcdn.net/cfile/tistory/241104445948D27B09")
             .then(result => {
                 console.log(result);
             }).catch(error => {
             console.error('점심 알람 에러 발생 ===> ', error);
-        });
-
-        util.sendSlack(message, 3, null, (err) => {
-            if (err) {
-                console.error('에러 발생 ===> ', err);
-            }
         });
         console.log('점심 알람을 보냈습니다.');
     });

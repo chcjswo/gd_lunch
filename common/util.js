@@ -78,7 +78,7 @@ const sendSlack = (message, type, id, cb) => {
     slack.webhook(json, cb);
 };
 
-const sendTeamsMessage = async (title, subTitle, message, url) => {
+const sendTeamsMessage = async (title, subTitle, message, url, imageUrl) => {
     const webhook = new IncomingWebhook(url);
     await webhook.send(JSON.stringify({
             "@type": "MessageCard",
