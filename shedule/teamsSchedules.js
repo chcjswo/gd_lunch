@@ -28,7 +28,7 @@ const teamsAlarmSchedule = () => {
         const deathSum = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(1) > dl > dd').text();
         const deathPreviousDay = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(2) > dl > dd > span').text();
 
-        const data = `${title}<br>`
+        const message = `${title}<br>`
             + `확진환자 누적: ${sum} 명<br>`
             + `전일대비 확진환자 수: ${confirmed} 명<br>`
             + `전일대비 국내발생: ${domestic} 명<br>`
@@ -42,7 +42,7 @@ const teamsAlarmSchedule = () => {
 
         util.sendTeamsMessage('코로나 알람',
             '오늘의 코로나 정보',
-            data,
+            message,
             process.env.TEAMS_RANDOM_URL,
             "https://img.lovepik.com/element/45004/7323.png_860.png"
         )
@@ -61,7 +61,7 @@ const teamsAlarmSchedule = () => {
         const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
         util.sendTeamsMessage('회의 알람',
             '서버 개발팀 주간회의',
-            data,
+            message,
             process.env.TEAMS_SERVER_TEAM_URL,
             "https://cdn.icon-icons.com/icons2/2387/PNG/512/meetings_meeting_table_people_work_icon_144587.png"
         )
@@ -80,7 +80,7 @@ const teamsAlarmSchedule = () => {
         const message = `신나는 점심 시간 입니다.<br>빨리 엘베 앞으로 고고고~~`;
         util.sendTeamsMessage('점심 알람',
             '점심 뭐 먹지??',
-            data,
+            message,
             process.env.TEAMS_SERVER_TEAM_URL,
             "https://t1.daumcdn.net/cfile/tistory/241104445948D27B09")
             .then(result => {
