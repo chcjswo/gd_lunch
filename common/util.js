@@ -1,6 +1,8 @@
 const Slack = require('slack-node');
 const env = process.env.NODE_ENV || 'development';
 const { IncomingWebhook } = require('ms-teams-webhook');
+const got = require("got");
+const cheerio = require("cheerio");
 
 const sendSlack = (message, type, id, cb) => {
     let slackUrl = process.env.MOCADEV_SLACK_URL;
@@ -124,9 +126,41 @@ const makeSlackMessage = (emoji, color, title, value) => ({
     }],
 });
 
+const makeCovidMessage = ($) => {
+    const title = `코로나바이러스감염증-19 국내 발생현황 ${$('#content > div > h5:nth-child(4) > span').text()}`;
+    const sum = $('#content > div > div.caseTable > div:nth-child(1) > ul > li:nth-child(1) > dl > dd').text();
+    const confirmed = $('#content > div > div.caseTable > div:nth-child(1) > ul > li:nth-child(2) > dl > dd > ul > li:nth-child(1) > p').text();
+    const domestic = $('#content > div > div.caseTable > div:nth-child(1) > ul > li:nth-child(2) > dl > dd > ul > li:nth-child(2) > p').text();
+    const overseas = $('#content > div > div.caseTable > div:nth-child(1) > ul > li:nth-child(2) > dl > dd > ul > li:nth-child(3) > p').text();
+    const releaseSum = $('#content > div > div.caseTable > div:nth-child(2) > ul > li:nth-child(1) > dl > dd').text();
+    const releasePreviousDay = $('#content > div > div.caseTable > div:nth-child(2) > ul > li:nth-child(2) > dl > dd > span').text();
+    const progressSum = $('#content > div > div.caseTable > div:nth-child(3) > ul > li:nth-child(1) > dl > dd').text();
+    const progressPreviousDay = $('#content > div > div.caseTable > div:nth-child(3) > ul > li:nth-child(2) > dl > dd > span').text();
+    const deathSum = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(1) > dl > dd').text();
+    const deathPreviousDay = $('#content > div > div.caseTable > div:nth-child(4) > ul > li:nth-child(2) > dl > dd > span').text();
+
+    return `${title}<br>`
+        + `확진환자 누적: ${sum} 명<br>`
+        + `전일대비 확진환자 수: ${confirmed} 명<br>`
+        + `전일대비 국내발생: ${domestic} 명<br>`
+        + `전일대비 해외발생: ${overseas} 명<br>`
+        + `격리해제 누적: ${releaseSum} 명<br>`
+        + `격리해제 전일대비: ${releasePreviousDay} 명<br>`
+        + `격리중 누적: ${progressSum} 명<br>`
+        + `격리중 전일대비: ${progressPreviousDay} 명<br>`
+        + `사망 누적: ${deathSum} 명<br>`
+        + `사망 전일대비: ${deathPreviousDay} 명<br>`;
+}
+
+const getCovidMessage = async () => {
+    const occurrenceRes = await got('http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=11&ncvContSeq=&contSeq=&board_id=&gubun=', {retries: 5});
+    return makeCovidMessage(cheerio.load(occurrenceRes.body));
+}
+
 module.exports = {
     sendSlack,
     getCurrentDate,
     makeSlackMessage,
-    sendTeamsMessage
+    sendTeamsMessage,
+    getCovidMessage
 };
