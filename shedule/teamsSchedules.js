@@ -14,7 +14,6 @@ const teamsAlarmSchedule = () => {
      */
     schedule.scheduleJob('50 09 * * 1-5', async () => {
         const message = await util.getCovidMessage();
-
         util.sendTeamsMessage('코로나 알람',
             '오늘의 코로나 정보',
             message,
