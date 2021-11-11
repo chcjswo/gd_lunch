@@ -29,7 +29,7 @@ const teamsAlarmSchedule = () => {
     });
 
     /**
-     * 서버 개발팀 알림
+     * 서버 개발팀 주간회의 알림
      */
     schedule.scheduleJob('0 15 * * 1', () => {
         const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
@@ -63,6 +63,24 @@ const teamsAlarmSchedule = () => {
             console.error('점심 알람 에러 발생 ===> ', error);
         });
         console.log('점심 알람을 보냈습니다.');
+    });
+
+    /**
+     * 금요일 아사나 정리 알림
+     */
+    schedule.scheduleJob('30 14 * * 5', () => {
+        const message = `신나는 불금의 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요.`;
+        util.sendTeamsMessage('아사나 알람',
+            '아사나 정리 합시다',
+            message,
+            process.env.TEAMS_SERVER_TEAM_URL,
+            "https://t1.daumcdn.net/cfile/tistory/241104445948D27B09")
+            .then(result => {
+                console.log(result);
+            }).catch(error => {
+            console.error('아사나 알람 에러 발생 ===> ', error);
+        });
+        console.log('아사나 알람을 보냈습니다.');
     });
 };
 
