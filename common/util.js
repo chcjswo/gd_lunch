@@ -92,7 +92,7 @@ const sendTeamsMessage = async (title, subTitle, message, url, imageUrl) => {
                 {
                     "activityTitle": title,
                     "activitySubtitle": subTitle,
-                    "activityImage": "https://cdn.pixabay.com/photo/2020/04/28/06/57/medicine-5103043_960_720.jpg",
+                    "activityImage": imageUrl,
                     "text": message
                 }
             ],
