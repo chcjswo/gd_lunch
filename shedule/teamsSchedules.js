@@ -69,12 +69,12 @@ const teamsAlarmSchedule = () => {
      * 금요일 아사나 정리 알림
      */
     schedule.scheduleJob('30 14 * * 5', () => {
-        const message = `신나는 불금의 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요.`;
+        const message = `신나는 불금!!! 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요. 제발~~`;
         util.sendTeamsMessage('아사나 알람',
             '아사나 정리 합시다',
             message,
             process.env.TEAMS_SERVER_TEAM_URL,
-            "https://t1.daumcdn.net/cfile/tistory/241104445948D27B09")
+            "https://cdn-icons-png.flaticon.com/512/1550/1550191.png")
             .then(result => {
                 console.log(result);
             }).catch(error => {
