@@ -71,7 +71,8 @@ const getUserName = () => {
 const makeRestaurantTeamsMessage = async () => {
     // 랜점 점심 선택
     const restaurantData = await randomRestaurant();
-    return `${util.getCurrentDate()} 오늘의 점심은 ${getUserName()}님이 선택한 <b>${restaurantData.name}</b> 어떠세요?`;
+    return `${util.getCurrentDate()} 오늘의 점심은 ${getUserName()}님이 선택한 <b>${restaurantData.name}</b> 어떠세요?<br>
+                <a href='http://lunch.mocadev.me/'>http://lunch.mocadev.me/</a>`;
 };
 
 module.exports = {
