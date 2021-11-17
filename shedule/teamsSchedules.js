@@ -51,7 +51,7 @@ const teamsAlarmSchedule = () => {
      * 점심시간 알림
      */
     schedule.scheduleJob('30 12 * * 1-5', () => {
-        const message = `신나는 점심 시간 입니다.<br>빨리 엘베 앞으로 고고고~~`;
+        const message = `신나는 점심 시간 입니다.<br>빨리 엘베 앞으로 고고고~~<br><a href='http://lunch.mocadev.me/'>http://lunch.mocadev.me/</a>`;
         util.sendTeamsMessage('점심 알람',
             '점심 뭐 먹지??',
             message,
