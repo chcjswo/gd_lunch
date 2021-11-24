@@ -152,19 +152,7 @@ const getCovidMessage = async () => {
 }
 
 const getServerTeamProfile = () => {
-    return `
-        <span itemscope=""
-            itemtype="http://schema.skype.com/Mention"
-            data-itemprops="{"mri":"8:orgid:54f67847-07b3-42d5-9cfc-e2bec74162a7","mentionType":"person","memberCount":0}">송화영
-        </span>&nbsp;
-        <span itemscope=""
-            itemtype="http://schema.skype.com/Mention"
-            data-itemprops="{"mri":"8:orgid:87064348-1b01-4c48-bd7d-e712d5fc6c02","mentionType":"person","memberCount":0}">엄창민
-        </span>&nbsp;
-        <span itemscope=""
-            itemtype="http://schema.skype.com/Mention"
-            data-itemprops="{"mri":"8:orgid:242ee41f-a9db-4bad-8422-99ae3761b078","mentionType":"person","memberCount":0}">서청원
-        </span>&nbsp;`;
+    return `<at>송화영</at><at>엄창민</at><at>서청원</at>`;
 };
 
 module.exports = {
