@@ -32,7 +32,7 @@ const teamsAlarmSchedule = () => {
      * 서버 개발팀 주간회의 알림
      */
     schedule.scheduleJob('0 15 * * 1', () => {
-        const message = `${util.getServerTeamProfile()}<br>서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
+        const message = `서버 개발팀 주간회의 시간입니다.<br>회의실로 모여주세요~~`;
         util.sendTeamsMessage('회의 알람',
             '서버 개발팀 주간회의',
             message,
@@ -69,7 +69,7 @@ const teamsAlarmSchedule = () => {
      * 매일 아사나 정리 알림
      */
     schedule.scheduleJob('30 17 * * 1-5', () => {
-        const message = `${util.getServerTeamProfile()}<br>신나는 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요. 제발~~`;
+        const message = `신나는 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요. 제발~~`;
         util.sendTeamsMessage('아사나 알람',
             '아사나 정리 합시다',
             message,
