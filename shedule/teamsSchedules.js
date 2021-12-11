@@ -68,12 +68,12 @@ const teamsAlarmSchedule = () => {
     /**
      * 매일 아사나 정리 알림
      */
-    schedule.scheduleJob('30 17 * * 1-5', () => {
+    schedule.scheduleJob('30 16 * * 1-5', () => {
         const message = `신나는 아사나 정리의 시간 입니다.<br>due date 확인하고 Task 정리 해주세요. 제발~~`;
         util.sendTeamsMessage('아사나 알람',
             '아사나 정리 합시다',
             message,
-            process.env.TEAMS_SERVER_TEAM_URL,
+            process.env.TEAMS_GENERAL_URL,
             "https://cdn-icons-png.flaticon.com/512/1550/1550191.png")
             .then(result => {
                 console.log(result);
