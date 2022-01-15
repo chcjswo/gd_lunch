@@ -129,21 +129,24 @@ const makeSlackMessage = (emoji, color, title, value) => ({
 const makeCovidMessage = ($) => {
     const title = `코로나바이러스감염증-19 국내 발생현황 ${$('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > h2 > span').text()}`;
     const confirmed = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > div.occur_graph > table > tbody > tr:nth-child(1) > td:nth-child(5) > span').text();
-    const vaccinated1Percent = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.vaccineNum > div > div > div:nth-child(1) > ul:nth-child(1) > li.percent').text();
-    const vaccinated1Sum = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.vaccineNum > div > div > div:nth-child(1) > ul:nth-child(2) > li:nth-child(1)').text();
-    const vaccinatedCompletedPercent = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.vaccineNum > div > div > div:nth-child(2) > ul:nth-child(1) > li.percent').text();
-    const vaccinatedCompletedSum = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.vaccineNum > div > div > div:nth-child(2) > ul:nth-child(2) > li:nth-child(1)').text();
+    const avg7days = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > div.occur_graph > table > tbody > tr:nth-child(2) > td:nth-child(5) > span').text();
+    const vaccinated1Percent = $('#content > div > div > div.liveboard_layout > div.vaccineNum > div > div.vaccine_list > div > div:nth-child(1) > div:nth-child(2) > ul > li.percent').text();
+    const vaccinated1Sum = $('#content > div > div > div.liveboard_layout > div.vaccineNum > div > div.vaccine_list > div > div:nth-child(1) > div:nth-child(2) > ul > li:nth-child(2)').text();
+    const vaccinatedCompletedPercent = $('#content > div > div > div.liveboard_layout > div.vaccineNum > div > div.vaccine_list > div > div:nth-child(2) > div:nth-child(2) > ul > li.percent').text();
+    const vaccinatedCompletedSum = $('#content > div > div > div.liveboard_layout > div.vaccineNum > div > div.vaccine_list > div > div:nth-child(2) > div:nth-child(2) > ul > li:nth-child(2)').text();
     const deathSum = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > div.occur_num > div:nth-child(1)').text();
     const deathPreviousDay = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > div.occur_graph > table > tbody > tr:nth-child(1) > td:nth-child(2) > span').text();
+    const deathAvg7Days = $('#content > div > div > div.liveboard_layout > div.liveToggleOuter > div > div.live_left > div.occurrenceStatus > div.occur_graph > table > tbody > tr:nth-child(2) > td:nth-child(2) > span').text();
 
     return `${title}<br>`
-        + `확진 수: ${confirmed} 명<br>`
+        + `확진 수: ${confirmed}명<br>`
+        + `최근 7일간 일평균: ${avg7days}명<br>`
         + `1차접종: ${vaccinated1Percent}<br>`
-        + `1차접종 ${vaccinated1Sum} 명<br>`
-        + `접종완료: ${vaccinatedCompletedPercent}<br>`
-        + `접종완료 ${vaccinatedCompletedSum} 명<br>`
-        + `(누적)사망: ${deathSum} 명<br>`
-        + `사망: ${deathPreviousDay} 명<br>`;
+        + `1차접종완료: ${vaccinated1Sum}명<br>`
+        + `2차접종: ${vaccinatedCompletedPercent}<br>`
+        + `2차접종완료: ${vaccinatedCompletedSum}명<br>`
+        + `사망: ${deathPreviousDay}명<br>`
+        + `최근 7일간 일평균 사망: ${deathAvg7Days}명<br>`;
 }
 
 const getCovidMessage = async () => {
