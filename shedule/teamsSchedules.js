@@ -10,25 +10,6 @@ const teamsAlarmSchedule = () => {
     });
 
     /**
-     * 코로나 알림
-     */
-    schedule.scheduleJob('50 09 * * 1-5', async () => {
-        const message = await util.getCovidMessage();
-        util.sendTeamsMessage('코로나 알람',
-            '오늘의 코로나 정보',
-            message,
-            process.env.TEAMS_RANDOM_URL,
-            "https://img.lovepik.com/element/45004/7323.png_860.png"
-        )
-            .then(result => {
-                console.log(result);
-            }).catch(error => {
-            console.error('코로나 알람 에러 발생 ===> ', error);
-        });
-        console.log('코로나 알람을 보냈습니다.');
-    });
-
-    /**
      * 서버 개발팀 주간회의 알림
      */
     schedule.scheduleJob('0 15 * * 1', () => {
